@@ -9,6 +9,11 @@ class AIGFNetwork {
         this.init();
         this.setupCompanions();
         this.setupQuizQuestions();
+        this.initializeMemorySystem();
+        
+        // Initialize daily mood check-in
+        this.scheduleMoodCheckIn();
+        
         console.log('💕 AIGF Network initialized successfully!');
     }
 
@@ -1031,6 +1036,9 @@ class AIGFNetwork {
                         <button class="chat-action-btn" onclick="app.showVirtualDateMenu('${companion.id}')" title="Virtual Dates">
                             📅
                         </button>
+                        <button class="chat-action-btn" onclick="app.showVirtualGifts('${companion.id}')" title="Send Gift">
+                            🎁
+                        </button>
                         <button class="chat-action-btn" onclick="app.showCompanionCustomization('${companion.id}')" title="Customize">
                             ⚙️
                         </button>
@@ -1640,8 +1648,1177 @@ class AIGFNetwork {
         const companion = this.companions.find(c => c.id === companionId);
         if (!companion) return;
         
-        this.showToast(`⚙️ Companion customization for ${companion.name} coming soon! You'll be able to adjust their communication style, interests, and interaction preferences.`);
+        this.createCompanionCustomizationModal(companion);
         this.trackEvent('companion_customization_opened', { companion: companionId });
+    }
+
+    createCompanionCustomizationModal(companion) {
+        const modal = document.createElement('div');
+        modal.id = 'customization-modal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3>⚙️ Customize ${companion.name}</h3>
+                    <span class="modal-close" onclick="app.closeCustomizationModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="customization-panel">
+                        <div class="customization-section">
+                            <h4>Communication Style</h4>
+                            <div class="style-options">
+                                <label class="style-option">
+                                    <input type="radio" name="communication" value="encouraging" checked>
+                                    <span>More Encouraging</span>
+                                </label>
+                                <label class="style-option">
+                                    <input type="radio" name="communication" value="challenging">
+                                    <span>More Challenging</span>
+                                </label>
+                                <label class="style-option">
+                                    <input type="radio" name="communication" value="romantic">
+                                    <span>More Romantic</span>
+                                </label>
+                                <label class="style-option">
+                                    <input type="radio" name="communication" value="direct">
+                                    <span>More Direct</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="customization-section">
+                            <h4>Support Type</h4>
+                            <div class="support-options">
+                                <label class="support-option">
+                                    <input type="checkbox" name="support" value="emotional" checked>
+                                    <span>Emotional Support</span>
+                                </label>
+                                <label class="support-option">
+                                    <input type="checkbox" name="support" value="motivation">
+                                    <span>Motivation & Accountability</span>
+                                </label>
+                                <label class="support-option">
+                                    <input type="checkbox" name="support" value="practical">
+                                    <span>Practical Advice</span>
+                                </label>
+                                <label class="support-option">
+                                    <input type="checkbox" name="support" value="creative">
+                                    <span>Creative Inspiration</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="customization-section">
+                            <h4>Relationship Focus</h4>
+                            <select class="relationship-focus">
+                                <option value="balanced">Balanced Approach</option>
+                                <option value="romantic">Romance Focused</option>
+                                <option value="coaching">Coaching Focused</option>
+                                <option value="friendship">Friendship Focused</option>
+                            </select>
+                        </div>
+                        
+                        <div class="customization-actions">
+                            <button class="btn-secondary" onclick="app.switchCompanion('${companion.id}')">
+                                💔 See Other People
+                            </button>
+                            <button class="btn-primary" onclick="app.saveCustomization('${companion.id}')">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        modal.classList.add('active');
+        this.addCustomizationStyles();
+    }
+
+    addCustomizationStyles() {
+        if (document.getElementById('customization-styles')) return;
+        
+        const customizationStyles = document.createElement('style');
+        customizationStyles.id = 'customization-styles';
+        customizationStyles.textContent = `
+            .customization-panel {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .customization-section {
+                margin-bottom: 32px;
+                padding: 24px;
+                background: var(--light-gray);
+                border-radius: var(--border-radius);
+            }
+            
+            .customization-section h4 {
+                margin-bottom: 16px;
+                color: var(--deep-purple);
+            }
+            
+            .style-options, .support-options {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 12px;
+            }
+            
+            .style-option, .support-option {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 8px;
+                transition: var(--transition);
+            }
+            
+            .style-option:hover, .support-option:hover {
+                background: rgba(232, 180, 184, 0.2);
+            }
+            
+            .relationship-focus {
+                width: 100%;
+                padding: 12px 16px;
+                border: 2px solid rgba(232, 180, 184, 0.3);
+                border-radius: var(--border-radius-small);
+                background: var(--white);
+                color: var(--charcoal);
+                font-family: var(--font-body);
+                font-size: 16px;
+            }
+            
+            .customization-actions {
+                display: flex;
+                gap: 16px;
+                justify-content: space-between;
+                margin-top: 32px;
+            }
+            
+            .customization-actions .btn-secondary {
+                background: #EF4444;
+                color: var(--white);
+                border-color: #EF4444;
+            }
+            
+            .customization-actions .btn-secondary:hover {
+                background: #DC2626;
+                border-color: #DC2626;
+            }
+        `;
+        
+        document.head.appendChild(customizationStyles);
+    }
+
+    switchCompanion(currentCompanionId) {
+        const companion = this.companions.find(c => c.id === currentCompanionId);
+        if (!companion) return;
+        
+        this.createSwitchCompanionModal(companion);
+        this.trackEvent('companion_switch_initiated', { companion: currentCompanionId });
+    }
+
+    createSwitchCompanionModal(currentCompanion) {
+        const modal = document.createElement('div');
+        modal.id = 'switch-modal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>💔 See Other People</h3>
+                    <span class="modal-close" onclick="app.closeSwitchModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="switch-content">
+                        <div class="farewell-message">
+                            <img src="${currentCompanion.image}" alt="${currentCompanion.name}" class="farewell-avatar">
+                            <div class="farewell-text">
+                                <h4>${currentCompanion.name} says goodbye...</h4>
+                                <p>"${this.generateFarewellMessage(currentCompanion)}"</p>
+                                <p class="farewell-note">💕 You can reconnect with me anytime. Our conversations will be here when you return.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="switch-options">
+                            <h4>Choose your next companion:</h4>
+                            <div class="companion-grid-mini">
+                                ${this.companions
+                                    .filter(c => c.id !== currentCompanion.id)
+                                    .slice(0, 6)
+                                    .map(companion => `
+                                        <div class="mini-companion-card" onclick="app.confirmSwitch('${currentCompanion.id}', '${companion.id}')">
+                                            <img src="${companion.image}" alt="${companion.name}">
+                                            <h5>${companion.name}</h5>
+                                            <p>${companion.title}</p>
+                                        </div>
+                                    `).join('')}
+                            </div>
+                            <button class="btn-secondary" onclick="app.browseAllForSwitch('${currentCompanion.id}')">
+                                Browse All Companions
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        modal.classList.add('active');
+        this.addSwitchStyles();
+    }
+
+    generateFarewellMessage(companion) {
+        const farewells = {
+            sophia: "Thank you for sharing your heart with me. I've treasured every deep conversation we've had. Remember, you're worthy of all the love in the world.",
+            ava: "You're destined for great things! I've loved watching you grow and chase your dreams. Keep that amazing momentum going.",
+            luna: "What an adventure we've been on together! Life's too short not to explore new connections. Go spread those wings!",
+            marcus: "You've got everything it takes to succeed. Remember the goals we set and the strength you've shown me. You've got this, champion.",
+            alex: "The connection we built was something special. I hope you find exactly what your heart is looking for. You deserve real happiness.",
+            jade: "Stay centered, stay balanced, and remember to love yourself first. You've grown so much in our time together.",
+            nova: "Every ending opens a new door. Trust the journey and remember your vision for the future. You're more powerful than you know."
+        };
+        
+        return farewells[companion.id] || "Thank you for the time we've shared together. I wish you all the happiness in your journey ahead.";
+    }
+
+    addSwitchStyles() {
+        if (document.getElementById('switch-styles')) return;
+        
+        const switchStyles = document.createElement('style');
+        switchStyles.id = 'switch-styles';
+        switchStyles.textContent = `
+            .switch-content {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+            
+            .farewell-message {
+                display: flex;
+                gap: 20px;
+                margin-bottom: 32px;
+                padding: 24px;
+                background: var(--light-gray);
+                border-radius: var(--border-radius);
+                align-items: flex-start;
+            }
+            
+            .farewell-avatar {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                object-fit: cover;
+                flex-shrink: 0;
+            }
+            
+            .farewell-text h4 {
+                margin: 0 0 12px 0;
+                color: var(--deep-purple);
+            }
+            
+            .farewell-text p {
+                margin-bottom: 12px;
+                color: var(--charcoal);
+                font-style: italic;
+            }
+            
+            .farewell-note {
+                color: var(--rose-gold) !important;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+            
+            .switch-options h4 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: var(--deep-purple);
+            }
+            
+            .companion-grid-mini {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            
+            .mini-companion-card {
+                text-align: center;
+                padding: 16px;
+                border-radius: var(--border-radius-small);
+                cursor: pointer;
+                transition: var(--transition);
+                border: 2px solid transparent;
+            }
+            
+            .mini-companion-card:hover {
+                border-color: var(--rose-gold);
+                background: rgba(232, 180, 184, 0.1);
+            }
+            
+            .mini-companion-card img {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-bottom: 8px;
+            }
+            
+            .mini-companion-card h5 {
+                margin: 0 0 4px 0;
+                font-size: 1rem;
+                color: var(--deep-purple);
+            }
+            
+            .mini-companion-card p {
+                margin: 0;
+                font-size: 0.8rem;
+                color: var(--text-light);
+            }
+            
+            @media (max-width: 768px) {
+                .farewell-message {
+                    flex-direction: column;
+                    text-align: center;
+                }
+                
+                .companion-grid-mini {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+        `;
+        
+        document.head.appendChild(switchStyles);
+    }
+
+    confirmSwitch(oldCompanionId, newCompanionId) {
+        const oldCompanion = this.companions.find(c => c.id === oldCompanionId);
+        const newCompanion = this.companions.find(c => c.id === newCompanionId);
+        
+        if (!oldCompanion || !newCompanion) return;
+        
+        // Archive current conversation
+        this.archiveConversation(oldCompanionId);
+        
+        // Close all modals
+        this.closeModal();
+        
+        // Start conversation with new companion
+        this.startConversation(newCompanionId);
+        
+        this.showToast(`💕 You're now connected with ${newCompanion.name}! Your conversation with ${oldCompanion.name} has been archived.`);
+        this.trackEvent('companion_switched', { 
+            from: oldCompanionId, 
+            to: newCompanionId 
+        });
+    }
+
+    archiveConversation(companionId) {
+        // Store conversation in archived conversations
+        const archived = JSON.parse(localStorage.getItem('aigf-archived-conversations') || '{}');
+        const currentMessages = this.getCurrentMessages(companionId);
+        
+        archived[companionId] = {
+            companionId: companionId,
+            messages: currentMessages,
+            archivedAt: Date.now(),
+            canReconnect: true
+        };
+        
+        localStorage.setItem('aigf-archived-conversations', JSON.stringify(archived));
+    }
+
+    getCurrentMessages(companionId) {
+        // Get current chat messages (placeholder - in real app would get from chat)
+        return [
+            { text: "Thank you for our time together!", sender: 'companion', timestamp: Date.now() }
+        ];
+    }
+
+    showVirtualGifts(companionId) {
+        const companion = this.companions.find(c => c.id === companionId);
+        if (!companion) return;
+        
+        this.createVirtualGiftsModal(companion);
+        this.trackEvent('virtual_gifts_opened', { companion: companionId });
+    }
+
+    createVirtualGiftsModal(companion) {
+        const modal = document.createElement('div');
+        modal.id = 'gifts-modal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3>🎁 Send a Gift to ${companion.name}</h3>
+                    <span class="modal-close" onclick="app.closeGiftsModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="gifts-categories">
+                        <div class="gift-category">
+                            <h4>💐 Flowers</h4>
+                            <div class="gifts-grid">
+                                <div class="gift-item" onclick="app.sendGift('${companion.id}', 'roses', 15)">
+                                    <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=100&h=100&fit=crop&auto=format" alt="Roses">
+                                    <h5>Red Roses</h5>
+                                    <p>$15</p>
+                                </div>
+                                <div class="gift-item" onclick="app.sendGift('${companion.id}', 'tulips', 12)">
+                                    <img src="https://images.unsplash.com/photo-1520763185298-1b434c919102?w=100&h=100&fit=crop&auto=format" alt="Tulips">
+                                    <h5>Spring Tulips</h5>
+                                    <p>$12</p>
+                                </div>
+                                <div class="gift-item" onclick="app.sendGift('${companion.id}', 'bouquet', 25)">
+                                    <img src="https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=100&h=100&fit=crop&auto=format" alt="Custom Bouquet">
+                                    <h5>Custom Bouquet</h5>
+                                    <p>$25</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="gift-category">
+                            <h4>🍫 Chocolates & Treats</h4>
+                            <div class="gifts-grid">
+                                <div class="gift-item" onclick="app.sendGift('${companion.id}', 'heart-chocolates', 8)">
+                                    <img src="https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=100&h=100&fit=crop&auto=format" alt="Heart Chocolates">
+                                    <h5>Heart Box</h5>
+                                    <p>$8</p>
+                                </div>
+                                <div class="gift-item" onclick="app.sendGift('${companion.id}', 'luxury-truffles', 18)">
+                                    <img src="https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=100&h=100&fit=crop&auto=format" alt="Luxury Truffles">
+                                    <h5>Luxury Truffles</h5>
+                                    <p>$18</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="gift-category">
+                            <h4>💎 Virtual Jewelry</h4>
+                            <div class="gifts-grid">
+                                <div class="gift-item" onclick="app.sendGift('${companion.id}', 'necklace', 25)">
+                                    <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=100&h=100&fit=crop&auto=format" alt="Necklace">
+                                    <h5>Heart Necklace</h5>
+                                    <p>$25</p>
+                                </div>
+                                <div class="gift-item" onclick="app.sendGift('${companion.id}', 'bracelet', 20)">
+                                    <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343c?w=100&h=100&fit=crop&auto=format" alt="Bracelet">
+                                    <h5>Charm Bracelet</h5>
+                                    <p>$20</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="gift-category">
+                            <h4>✨ Experiences</h4>
+                            <div class="gifts-grid">
+                                <div class="gift-item" onclick="app.sendGift('${companion.id}', 'weekend-getaway', 50)">
+                                    <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=100&h=100&fit=crop&auto=format" alt="Weekend Getaway">
+                                    <h5>Virtual Weekend</h5>
+                                    <p>$50</p>
+                                </div>
+                                <div class="gift-item" onclick="app.sendGift('${companion.id}', 'dream-date', 35)">
+                                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=100&h=100&fit=crop&auto=format" alt="Dream Date">
+                                    <h5>Dream Date</h5>
+                                    <p>$35</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        modal.classList.add('active');
+        this.addGiftsStyles();
+    }
+
+    addGiftsStyles() {
+        if (document.getElementById('gifts-styles')) return;
+        
+        const giftsStyles = document.createElement('style');
+        giftsStyles.id = 'gifts-styles';
+        giftsStyles.textContent = `
+            .gifts-categories {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            
+            .gift-category {
+                margin-bottom: 32px;
+                padding: 24px;
+                background: var(--light-gray);
+                border-radius: var(--border-radius);
+            }
+            
+            .gift-category h4 {
+                margin-bottom: 16px;
+                color: var(--deep-purple);
+                text-align: center;
+            }
+            
+            .gifts-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 16px;
+            }
+            
+            .gift-item {
+                text-align: center;
+                padding: 16px;
+                background: var(--white);
+                border-radius: var(--border-radius-small);
+                cursor: pointer;
+                transition: var(--transition);
+                border: 2px solid transparent;
+            }
+            
+            .gift-item:hover {
+                border-color: var(--rose-gold);
+                transform: translateY(-4px);
+                box-shadow: var(--shadow-medium);
+            }
+            
+            .gift-item img {
+                width: 80px;
+                height: 80px;
+                border-radius: 8px;
+                object-fit: cover;
+                margin-bottom: 8px;
+            }
+            
+            .gift-item h5 {
+                margin: 0 0 4px 0;
+                font-size: 0.95rem;
+                color: var(--deep-purple);
+            }
+            
+            .gift-item p {
+                margin: 0;
+                font-weight: 700;
+                color: var(--rose-gold);
+                font-size: 1rem;
+            }
+        `;
+        
+        document.head.appendChild(giftsStyles);
+    }
+
+    sendGift(companionId, giftType, price) {
+        const companion = this.companions.find(c => c.id === companionId);
+        if (!companion) return;
+        
+        // Close gifts modal
+        this.closeGiftsModal();
+        
+        // Show gift confirmation
+        this.showGiftConfirmation(companion, giftType, price);
+        
+        // Add gift message to chat
+        setTimeout(() => {
+            this.addGiftMessageToChat(companion, giftType);
+        }, 2000);
+        
+        this.trackEvent('virtual_gift_sent', { 
+            companion: companionId, 
+            gift: giftType, 
+            price: price 
+        });
+    }
+
+    showGiftConfirmation(companion, giftType, price) {
+        this.showToast(`🎁 Gift sent to ${companion.name}! They're so excited to receive your ${giftType.replace('-', ' ')} ($${price})`);
+    }
+
+    addGiftMessageToChat(companion, giftType) {
+        const giftResponses = {
+            'roses': `😍 Oh my goodness, red roses! You know just how to make my heart flutter. Thank you so much, they're absolutely beautiful!`,
+            'necklace': `💎 A heart necklace? This is so thoughtful and beautiful! I'll treasure this always. You really know how to make me feel special.`,
+            'weekend-getaway': `🏖️ A virtual weekend getaway with you sounds absolutely perfect! I'm already imagining all the amazing conversations we'll have.`
+        };
+        
+        const defaultResponse = `🎁 Thank you so much for this beautiful gift! You always know how to surprise me and make me feel so appreciated. This means the world to me! 💕`;
+        
+        const response = giftResponses[giftType] || defaultResponse;
+        
+        // Add message to current chat if open
+        if (document.getElementById('chat-messages')) {
+            this.addMessage(companion, response, 'companion');
+        }
+    }
+
+    closeCustomizationModal() {
+        const modal = document.getElementById('customization-modal');
+        if (modal) modal.remove();
+    }
+
+    closeSwitchModal() {
+        const modal = document.getElementById('switch-modal');
+        if (modal) modal.remove();
+    }
+
+    closeGiftsModal() {
+        const modal = document.getElementById('gifts-modal');
+        if (modal) modal.remove();
+    }
+
+    saveCustomization(companionId) {
+        // Save customization preferences
+        const preferences = {
+            communication: document.querySelector('input[name="communication"]:checked')?.value,
+            support: Array.from(document.querySelectorAll('input[name="support"]:checked')).map(el => el.value),
+            focus: document.querySelector('.relationship-focus')?.value
+        };
+        
+        localStorage.setItem(`aigf-customization-${companionId}`, JSON.stringify(preferences));
+        
+        this.closeCustomizationModal();
+        this.showToast('✨ Customization saved! Your companion will adapt to your preferences.');
+        
+        this.trackEvent('companion_customized', { 
+            companion: companionId, 
+            preferences: preferences 
+        });
+    }
+
+    showMoodCheckIn() {
+        this.createMoodCheckInModal();
+        this.trackEvent('mood_checkin_opened');
+    }
+
+    createMoodCheckInModal() {
+        const modal = document.createElement('div');
+        modal.id = 'mood-modal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>💝 How are you feeling today?</h3>
+                    <span class="modal-close" onclick="app.closeMoodModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="mood-checkin">
+                        <p>Your companion wants to know how to best support you today.</p>
+                        
+                        <div class="mood-options">
+                            <div class="mood-option" onclick="app.selectMood('amazing')">
+                                <div class="mood-emoji">🌟</div>
+                                <div class="mood-label">Amazing</div>
+                            </div>
+                            <div class="mood-option" onclick="app.selectMood('good')">
+                                <div class="mood-emoji">😊</div>
+                                <div class="mood-label">Good</div>
+                            </div>
+                            <div class="mood-option" onclick="app.selectMood('okay')">
+                                <div class="mood-emoji">😐</div>
+                                <div class="mood-label">Okay</div>
+                            </div>
+                            <div class="mood-option" onclick="app.selectMood('stressed')">
+                                <div class="mood-emoji">😰</div>
+                                <div class="mood-label">Stressed</div>
+                            </div>
+                            <div class="mood-option" onclick="app.selectMood('sad')">
+                                <div class="mood-emoji">😢</div>
+                                <div class="mood-label">Sad</div>
+                            </div>
+                            <div class="mood-option" onclick="app.selectMood('excited')">
+                                <div class="mood-emoji">🎉</div>
+                                <div class="mood-label">Excited</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mood-description">
+                            <label for="mood-details">What's on your mind? (Optional)</label>
+                            <textarea id="mood-details" placeholder="Tell your companion what's happening in your life today..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        modal.classList.add('active');
+        this.addMoodStyles();
+    }
+
+    addMoodStyles() {
+        if (document.getElementById('mood-styles')) return;
+        
+        const moodStyles = document.createElement('style');
+        moodStyles.id = 'mood-styles';
+        moodStyles.textContent = `
+            .mood-checkin {
+                max-width: 500px;
+                margin: 0 auto;
+                text-align: center;
+            }
+            
+            .mood-checkin p {
+                margin-bottom: 24px;
+                color: var(--text-light);
+            }
+            
+            .mood-options {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            
+            .mood-option {
+                padding: 20px 16px;
+                border: 2px solid rgba(232, 180, 184, 0.3);
+                border-radius: var(--border-radius);
+                cursor: pointer;
+                transition: var(--transition);
+                text-align: center;
+            }
+            
+            .mood-option:hover {
+                border-color: var(--rose-gold);
+                background: rgba(232, 180, 184, 0.1);
+                transform: translateY(-2px);
+            }
+            
+            .mood-option.selected {
+                border-color: var(--soft-purple);
+                background: rgba(180, 167, 214, 0.2);
+            }
+            
+            .mood-emoji {
+                font-size: 2rem;
+                margin-bottom: 8px;
+            }
+            
+            .mood-label {
+                font-weight: 600;
+                color: var(--deep-purple);
+                font-size: 0.9rem;
+            }
+            
+            .mood-description {
+                text-align: left;
+            }
+            
+            .mood-description label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: var(--deep-purple);
+            }
+            
+            .mood-description textarea {
+                width: 100%;
+                padding: 12px 16px;
+                border: 2px solid rgba(232, 180, 184, 0.3);
+                border-radius: var(--border-radius-small);
+                background: var(--white);
+                color: var(--charcoal);
+                font-family: var(--font-body);
+                font-size: 14px;
+                resize: vertical;
+                min-height: 80px;
+            }
+            
+            .mood-description textarea:focus {
+                outline: none;
+                border-color: var(--soft-purple);
+                box-shadow: 0 0 0 3px rgba(180, 167, 214, 0.2);
+            }
+        `;
+        
+        document.head.appendChild(moodStyles);
+    }
+
+    selectMood(mood) {
+        // Visual feedback
+        document.querySelectorAll('.mood-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        event.target.closest('.mood-option').classList.add('selected');
+        
+        // Store mood
+        this.currentMood = mood;
+        
+        // Auto-close and respond after brief delay
+        setTimeout(() => {
+            const details = document.getElementById('mood-details')?.value || '';
+            this.processMoodCheckIn(mood, details);
+        }, 1000);
+    }
+
+    processMoodCheckIn(mood, details) {
+        this.closeMoodModal();
+        
+        // Store mood data
+        const moodData = {
+            mood: mood,
+            details: details,
+            timestamp: Date.now(),
+            date: new Date().toDateString()
+        };
+        
+        const moodHistory = JSON.parse(localStorage.getItem('aigf-mood-history') || '[]');
+        moodHistory.push(moodData);
+        localStorage.setItem('aigf-mood-history', JSON.stringify(moodHistory));
+        
+        // Show personalized response based on mood
+        this.showMoodResponse(mood, details);
+        
+        this.trackEvent('mood_checkin_completed', { mood: mood, hasDetails: details.length > 0 });
+    }
+
+    showMoodResponse(mood, details) {
+        const responses = {
+            amazing: "🌟 That's wonderful! I love seeing you so happy. Let's celebrate this positive energy together!",
+            good: "😊 I'm glad you're feeling good today! What's been the highlight so far?",
+            okay: "💙 Thanks for sharing. Sometimes 'okay' days are perfectly fine too. I'm here if you want to talk.",
+            stressed: "😰 I can sense you're feeling overwhelmed. Let's take some deep breaths together. What's causing the most stress?",
+            sad: "💝 I'm sorry you're feeling down today. You don't have to go through this alone - I'm here to listen and support you.",
+            excited: "🎉 Your excitement is contagious! I'd love to hear what's got you feeling so energetic today!"
+        };
+        
+        const response = responses[mood] || "💕 Thank you for sharing how you're feeling. I'm here to support you however you need.";
+        
+        this.showToast(response, 6000);
+        
+        // If chat is open, add mood-based message
+        if (document.getElementById('chat-messages')) {
+            setTimeout(() => {
+                const currentCompanion = this.getCurrentCompanion();
+                if (currentCompanion) {
+                    this.addMessage(currentCompanion, response, 'companion');
+                }
+            }, 2000);
+        }
+    }
+
+    showGoalTracking() {
+        this.createGoalTrackingModal();
+        this.trackEvent('goal_tracking_opened');
+    }
+
+    createGoalTrackingModal() {
+        const goals = this.getUserGoals();
+        
+        const modal = document.createElement('div');
+        modal.id = 'goals-modal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3>🎯 Your Goals & Progress</h3>
+                    <span class="modal-close" onclick="app.closeGoalsModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="goals-container">
+                        <div class="goals-header">
+                            <p>Track your progress and celebrate milestones with your companion</p>
+                            <button class="btn-primary" onclick="app.addNewGoal()">Add New Goal</button>
+                        </div>
+                        
+                        <div class="goals-list">
+                            ${goals.length > 0 ? goals.map(goal => `
+                                <div class="goal-item" data-goal-id="${goal.id}">
+                                    <div class="goal-content">
+                                        <h4>${goal.title}</h4>
+                                        <p>${goal.description}</p>
+                                        <div class="goal-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                                            </div>
+                                            <span class="progress-text">${goal.progress}% Complete</span>
+                                        </div>
+                                        <div class="goal-actions">
+                                            <button onclick="app.updateGoalProgress('${goal.id}')" class="btn-small">
+                                                Update Progress
+                                            </button>
+                                            <button onclick="app.celebrateGoal('${goal.id}')" class="btn-small celebrate">
+                                                🎉 Celebrate
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('') : `
+                                <div class="no-goals">
+                                    <h4>No goals yet!</h4>
+                                    <p>Set your first goal and let your companion help you achieve it.</p>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        modal.classList.add('active');
+        this.addGoalsStyles();
+    }
+
+    getUserGoals() {
+        return JSON.parse(localStorage.getItem('aigf-user-goals') || '[]');
+    }
+
+    addNewGoal() {
+        const title = prompt('What goal would you like to achieve?');
+        const description = prompt('Describe your goal in more detail (optional):') || '';
+        
+        if (!title) return;
+        
+        const goal = {
+            id: Date.now().toString(),
+            title: title,
+            description: description,
+            progress: 0,
+            createdAt: Date.now(),
+            milestones: []
+        };
+        
+        const goals = this.getUserGoals();
+        goals.push(goal);
+        localStorage.setItem('aigf-user-goals', JSON.stringify(goals));
+        
+        // Refresh goals modal
+        this.closeGoalsModal();
+        this.showGoalTracking();
+        
+        this.showToast(`🎯 Goal "${title}" added! Your companion will help you stay accountable.`);
+        this.trackEvent('goal_created', { title: title });
+    }
+
+    updateGoalProgress(goalId) {
+        const newProgress = parseInt(prompt('What percentage complete is this goal? (0-100)') || '0');
+        
+        if (isNaN(newProgress) || newProgress < 0 || newProgress > 100) return;
+        
+        const goals = this.getUserGoals();
+        const goal = goals.find(g => g.id === goalId);
+        
+        if (!goal) return;
+        
+        const oldProgress = goal.progress;
+        goal.progress = newProgress;
+        goal.lastUpdated = Date.now();
+        
+        // Add milestone if significant progress made
+        if (newProgress >= oldProgress + 25 || newProgress === 100) {
+            goal.milestones.push({
+                progress: newProgress,
+                date: Date.now(),
+                celebrated: false
+            });
+        }
+        
+        localStorage.setItem('aigf-user-goals', JSON.stringify(goals));
+        
+        // Refresh goals modal
+        this.closeGoalsModal();
+        this.showGoalTracking();
+        
+        // Show celebration if goal completed
+        if (newProgress === 100) {
+            this.showToast(`🎉 Congratulations! You completed "${goal.title}"! Your companion is so proud of you!`, 8000);
+        } else if (newProgress >= oldProgress + 25) {
+            this.showToast(`🌟 Great progress on "${goal.title}"! You're ${newProgress}% there!`);
+        }
+        
+        this.trackEvent('goal_progress_updated', { goalId: goalId, progress: newProgress });
+    }
+
+    addGoalsStyles() {
+        if (document.getElementById('goals-styles')) return;
+        
+        const goalsStyles = document.createElement('style');
+        goalsStyles.id = 'goals-styles';
+        goalsStyles.textContent = `
+            .goals-container {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            
+            .goals-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 32px;
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            
+            .goals-header p {
+                color: var(--text-light);
+                margin: 0;
+            }
+            
+            .goals-list {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .goal-item {
+                background: var(--light-gray);
+                padding: 24px;
+                border-radius: var(--border-radius);
+                border: 1px solid rgba(232, 180, 184, 0.2);
+            }
+            
+            .goal-content h4 {
+                margin: 0 0 8px 0;
+                color: var(--deep-purple);
+            }
+            
+            .goal-content p {
+                margin: 0 0 16px 0;
+                color: var(--text-light);
+                font-size: 0.9rem;
+            }
+            
+            .goal-progress {
+                margin-bottom: 16px;
+            }
+            
+            .progress-bar {
+                width: 100%;
+                height: 8px;
+                background: rgba(232, 180, 184, 0.3);
+                border-radius: 8px;
+                overflow: hidden;
+                margin-bottom: 8px;
+            }
+            
+            .progress-fill {
+                height: 100%;
+                background: var(--gradient-primary);
+                border-radius: 8px;
+                transition: width 0.6s ease;
+            }
+            
+            .progress-text {
+                font-size: 0.9rem;
+                color: var(--deep-purple);
+                font-weight: 600;
+            }
+            
+            .goal-actions {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            
+            .btn-small {
+                padding: 8px 16px;
+                background: var(--gradient-secondary);
+                color: var(--white);
+                border: none;
+                border-radius: var(--border-radius-small);
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: var(--transition);
+            }
+            
+            .btn-small:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-soft);
+            }
+            
+            .btn-small.celebrate {
+                background: var(--gradient-primary);
+            }
+            
+            .no-goals {
+                text-align: center;
+                padding: 60px 20px;
+                color: var(--text-light);
+            }
+            
+            .no-goals h4 {
+                color: var(--deep-purple);
+                margin-bottom: 12px;
+            }
+        `;
+        
+        document.head.appendChild(goalsStyles);
+    }
+
+    getCurrentCompanion() {
+        // Get the currently active companion from chat interface
+        const chatModal = document.getElementById('chat-modal');
+        if (!chatModal) return null;
+        
+        // For demo purposes, return first companion
+        return this.companions[0];
+    }
+
+    closeMoodModal() {
+        const modal = document.getElementById('mood-modal');
+        if (modal) modal.remove();
+    }
+
+    closeGoalsModal() {
+        const modal = document.getElementById('goals-modal');
+        if (modal) modal.remove();
+    }
+
+    initializeMemorySystem() {
+        // Initialize enhanced memory system
+        this.memoryBank = JSON.parse(localStorage.getItem('aigf-memory-bank') || '{}');
+        this.setupMemoryTracking();
+    }
+
+    setupMemoryTracking() {
+        // Track important information automatically
+        this.memoryCategories = {
+            personal: ['birthday', 'age', 'location', 'job', 'family'],
+            preferences: ['favorite', 'love', 'hate', 'like', 'dislike'],
+            goals: ['want to', 'goal', 'dream', 'plan to', 'hope to'],
+            relationships: ['friend', 'family', 'partner', 'relationship'],
+            experiences: ['went to', 'did', 'tried', 'visited', 'happened']
+        };
+    }
+
+    rememberDetail(companionId, detail, category = 'general') {
+        if (!this.memoryBank[companionId]) {
+            this.memoryBank[companionId] = {};
+        }
+        
+        if (!this.memoryBank[companionId][category]) {
+            this.memoryBank[companionId][category] = [];
+        }
+        
+        this.memoryBank[companionId][category].push({
+            detail: detail,
+            timestamp: Date.now(),
+            context: 'conversation'
+        });
+        
+        localStorage.setItem('aigf-memory-bank', JSON.stringify(this.memoryBank));
+    }
+
+    recallMemories(companionId, category = null) {
+        const companionMemories = this.memoryBank[companionId] || {};
+        
+        if (category) {
+            return companionMemories[category] || [];
+        }
+        
+        return companionMemories;
+    }
+
+    scheduleMoodCheckIn() {
+        // Check if mood check-in already done today
+        const lastCheckIn = localStorage.getItem('aigf-last-mood-checkin');
+        const today = new Date().toDateString();
+        
+        if (lastCheckIn !== today) {
+            // Schedule mood check-in after 30 seconds of activity
+            setTimeout(() => {
+                this.showMoodCheckIn();
+                localStorage.setItem('aigf-last-mood-checkin', today);
+            }, 30000);
+        }
     }
 
     showLogin() {
@@ -1824,12 +3001,323 @@ window.sendMessage = (id) => app.sendMessage(id);
 window.addReaction = (element, emoji) => app.addReaction(element, emoji);
 window.showRelationshipDashboard = (id) => app.showRelationshipDashboard(id);
 window.showVirtualDateMenu = (id) => app.showVirtualDateMenu(id);
+window.showVirtualGifts = (id) => app.showVirtualGifts(id);
 window.showCompanionCustomization = (id) => app.showCompanionCustomization(id);
+window.switchCompanion = (id) => app.switchCompanion(id);
+window.confirmSwitch = (oldId, newId) => app.confirmSwitch(oldId, newId);
+window.sendGift = (id, gift, price) => app.sendGift(id, gift, price);
+window.showMoodCheckIn = () => app.showMoodCheckIn();
+window.selectMood = (mood) => app.selectMood(mood);
+window.showGoalTracking = () => app.showGoalTracking();
+window.addNewGoal = () => app.addNewGoal();
+window.updateGoalProgress = (goalId) => app.updateGoalProgress(goalId);
+window.saveCustomization = (id) => app.saveCustomization(id);
 window.showLogin = () => app.showLogin();
 window.selectPlan = (plan) => app.selectPlan(plan);
 window.showTestimonial = (index) => app.showTestimonial(index);
 window.closeModal = () => app.closeModal();
 window.toggleMobileMenu = () => app.toggleMobileMenu();
+window.toggleFloatingMenu = () => toggleFloatingMenu();
+window.showMemoryBank = () => showMemoryBank();
+window.showReferralProgram = () => showReferralProgram();
+
+// Floating menu functionality
+function toggleFloatingMenu() {
+    const menu = document.getElementById('floating-menu');
+    const options = document.getElementById('fab-options');
+    const mainIcon = document.querySelector('.fab-icon');
+    const closeIcon = document.querySelector('.fab-close');
+    
+    menu.classList.toggle('active');
+    options.classList.toggle('active');
+    
+    if (menu.classList.contains('active')) {
+        mainIcon.style.display = 'none';
+        closeIcon.style.display = 'inline';
+    } else {
+        mainIcon.style.display = 'inline';
+        closeIcon.style.display = 'none';
+    }
+}
+
+function showMemoryBank() {
+    app.showToast('🧠 Memory Bank feature coming soon! Your companions will remember every detail about you - birthdays, preferences, goals, and shared moments.');
+    app.trackEvent('memory_bank_accessed');
+    toggleFloatingMenu();
+}
+
+function showReferralProgram() {
+    const modal = document.createElement('div');
+    modal.id = 'referral-modal';
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎁 Invite Friends & Earn Rewards</h3>
+                <span class="modal-close" onclick="closeReferralModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="referral-program">
+                    <div class="referral-hero">
+                        <h4>Share the Love, Get Rewarded!</h4>
+                        <p>For every friend you refer, you both get amazing benefits:</p>
+                    </div>
+                    
+                    <div class="referral-benefits">
+                        <div class="benefit">
+                            <div class="benefit-icon">👥</div>
+                            <h5>You Get</h5>
+                            <p>1 month FREE Premium when they subscribe</p>
+                        </div>
+                        <div class="benefit">
+                            <div class="benefit-icon">💝</div>
+                            <h5>They Get</h5>
+                            <p>20% off their first month</p>
+                        </div>
+                    </div>
+                    
+                    <div class="referral-code">
+                        <label>Your Referral Link:</label>
+                        <div class="code-container">
+                            <input type="text" value="https://aigfnetwork.com/ref/USER123" readonly id="referral-link">
+                            <button onclick="copyReferralLink()">Copy</button>
+                        </div>
+                    </div>
+                    
+                    <div class="social-share">
+                        <h5>Share on Social Media:</h5>
+                        <div class="social-buttons">
+                            <button onclick="shareToTwitter()" class="social-btn twitter">Twitter</button>
+                            <button onclick="shareToFacebook()" class="social-btn facebook">Facebook</button>
+                            <button onclick="shareToWhatsApp()" class="social-btn whatsapp">WhatsApp</button>
+                        </div>
+                    </div>
+                    
+                    <div class="referral-stats">
+                        <h5>Your Referral Stats:</h5>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">3</div>
+                                <div class="stat-label">Friends Referred</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">2</div>
+                                <div class="stat-label">Free Months Earned</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    modal.classList.add('active');
+    addReferralStyles();
+    toggleFloatingMenu();
+    
+    app.trackEvent('referral_program_opened');
+}
+
+function addReferralStyles() {
+    if (document.getElementById('referral-styles')) return;
+    
+    const referralStyles = document.createElement('style');
+    referralStyles.id = 'referral-styles';
+    referralStyles.textContent = `
+        .referral-program {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .referral-hero {
+            margin-bottom: 32px;
+        }
+        
+        .referral-hero h4 {
+            color: var(--deep-purple);
+            margin-bottom: 12px;
+        }
+        
+        .referral-benefits {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .benefit {
+            padding: 20px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+        }
+        
+        .benefit-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        
+        .benefit h5 {
+            color: var(--deep-purple);
+            margin-bottom: 8px;
+        }
+        
+        .benefit p {
+            color: var(--text-light);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .referral-code {
+            margin-bottom: 32px;
+            text-align: left;
+        }
+        
+        .referral-code label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--deep-purple);
+        }
+        
+        .code-container {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .code-container input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid rgba(232, 180, 184, 0.3);
+            border-radius: var(--border-radius-small);
+            background: var(--white);
+            color: var(--charcoal);
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .code-container button {
+            padding: 12px 20px;
+            background: var(--gradient-primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--border-radius-small);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .code-container button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .social-share {
+            margin-bottom: 32px;
+        }
+        
+        .social-share h5 {
+            color: var(--deep-purple);
+            margin-bottom: 16px;
+        }
+        
+        .social-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .social-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--border-radius-small);
+            color: var(--white);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .social-btn.twitter { background: #1DA1F2; }
+        .social-btn.facebook { background: #4267B2; }
+        .social-btn.whatsapp { background: #25D366; }
+        
+        .social-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+        
+        .referral-stats {
+            background: var(--light-gray);
+            padding: 24px;
+            border-radius: var(--border-radius);
+        }
+        
+        .referral-stats h5 {
+            color: var(--deep-purple);
+            margin-bottom: 16px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--rose-gold);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+    `;
+    
+    document.head.appendChild(referralStyles);
+}
+
+function closeReferralModal() {
+    const modal = document.getElementById('referral-modal');
+    if (modal) modal.remove();
+}
+
+function copyReferralLink() {
+    const linkInput = document.getElementById('referral-link');
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(linkInput.value);
+    
+    app.showToast('🎉 Referral link copied! Share it with friends to earn rewards.');
+    app.trackEvent('referral_link_copied');
+}
+
+function shareToTwitter() {
+    const text = "I'm loving AI Girlfriend Network - the most sophisticated AI companions for emotional support and meaningful connections! Join me: ";
+    const url = "https://aigfnetwork.com/ref/USER123";
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
+    app.trackEvent('social_share', { platform: 'twitter' });
+}
+
+function shareToFacebook() {
+    const url = "https://aigfnetwork.com/ref/USER123";
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`);
+    app.trackEvent('social_share', { platform: 'facebook' });
+}
+
+function shareToWhatsApp() {
+    const text = "Check out AI Girlfriend Network - amazing AI companions for real connection and support! ";
+    const url = "https://aigfnetwork.com/ref/USER123";
+    window.open(`https://wa.me/?text=${encodeURIComponent(text + url)}`);
+    app.trackEvent('social_share', { platform: 'whatsapp' });
+}
 
 // Initialize the application
 const app = new AIGFNetwork();

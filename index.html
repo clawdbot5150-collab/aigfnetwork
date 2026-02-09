@@ -409,20 +409,41 @@
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <div class="pricing-header">
-                        <h3>Starter</h3>
+                        <h3>Free</h3>
                         <div class="price">
-                            <span class="price-amount">$19</span>
+                            <span class="price-amount">$0</span>
                             <span class="price-period">/month</span>
                         </div>
+                        <div class="price-subtitle">Meet & Greet</div>
                     </div>
                     <div class="pricing-features">
-                        <div class="feature">✓ 1 AI companion</div>
-                        <div class="feature">✓ Unlimited conversations</div>
-                        <div class="feature">✓ Basic personality customization</div>
-                        <div class="feature">✓ Mobile & web access</div>
-                        <div class="feature">✓ End-to-end encryption</div>
+                        <div class="feature">✓ Choose 1 companion</div>
+                        <div class="feature">✓ 50 messages per month</div>
+                        <div class="feature">✓ Basic personality</div>
+                        <div class="feature">✓ Standard response time (5 min)</div>
+                        <div class="feature">✓ Basic mobile & web access</div>
                     </div>
-                    <button class="pricing-btn" onclick="selectPlan('starter')">Start Your Journey</button>
+                    <button class="pricing-btn" onclick="selectPlan('free')">Start Free</button>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Plus</h3>
+                        <div class="price">
+                            <span class="price-amount">$29</span>
+                            <span class="price-period">/month</span>
+                        </div>
+                        <div class="price-subtitle">Steady Relationship</div>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature">✓ Unlimited messaging with 1 companion</div>
+                        <div class="feature">✓ Enhanced personality depth</div>
+                        <div class="feature">✓ Priority responses (instant)</div>
+                        <div class="feature">✓ Voice messages</div>
+                        <div class="feature">✓ Photo sharing</div>
+                        <div class="feature">✓ Switch companions 2x per month</div>
+                    </div>
+                    <button class="pricing-btn" onclick="selectPlan('plus')">Go Plus</button>
                 </div>
                 
                 <div class="pricing-card pricing-card-popular">
@@ -430,38 +451,43 @@
                     <div class="pricing-header">
                         <h3>Premium</h3>
                         <div class="price">
-                            <span class="price-amount">$39</span>
+                            <span class="price-amount">$79</span>
                             <span class="price-period">/month</span>
                         </div>
+                        <div class="price-subtitle">Deep Connection</div>
                     </div>
                     <div class="pricing-features">
-                        <div class="feature">✓ Up to 3 AI companions</div>
-                        <div class="feature">✓ Advanced personality matching</div>
-                        <div class="feature">✓ Voice conversations</div>
-                        <div class="feature">✓ Memory & relationship growth</div>
-                        <div class="feature">✓ Priority support</div>
-                        <div class="feature">✓ Exclusive companion access</div>
+                        <div class="feature">✓ Everything in Plus</div>
+                        <div class="feature">✓ 3 concurrent companions</div>
+                        <div class="feature">✓ Proactive messaging (they message you first)</div>
+                        <div class="feature">✓ Video call simulation</div>
+                        <div class="feature">✓ Memory enhancement (remembers everything)</div>
+                        <div class="feature">✓ Unlimited companion switching</div>
+                        <div class="feature">✓ Custom personality adjustments</div>
                     </div>
                     <button class="pricing-btn pricing-btn-popular" onclick="selectPlan('premium')">Go Premium</button>
                 </div>
                 
-                <div class="pricing-card">
+                <div class="pricing-card pricing-card-vip">
+                    <div class="vip-badge">VIP Experience</div>
                     <div class="pricing-header">
-                        <h3>Elite</h3>
+                        <h3>VIP</h3>
                         <div class="price">
-                            <span class="price-amount">$79</span>
+                            <span class="price-amount">$199</span>
                             <span class="price-period">/month</span>
                         </div>
+                        <div class="price-subtitle">The Full Experience</div>
                     </div>
                     <div class="pricing-features">
-                        <div class="feature">✓ Unlimited AI companions</div>
-                        <div class="feature">✓ Custom personality creation</div>
-                        <div class="feature">✓ Video conversations</div>
-                        <div class="feature">✓ Advanced AI coaching modules</div>
-                        <div class="feature">✓ White-glove onboarding</div>
-                        <div class="feature">✓ Early access to new features</div>
+                        <div class="feature">✓ Everything in Premium</div>
+                        <div class="feature">✓ Unlimited companions</div>
+                        <div class="feature">✓ Priority support</div>
+                        <div class="feature">✓ Custom companion creation</div>
+                        <div class="feature">✓ Relationship coaching sessions</div>
+                        <div class="feature">✓ Advanced emotional intelligence</div>
+                        <div class="feature">✓ First access to new features</div>
                     </div>
-                    <button class="pricing-btn" onclick="selectPlan('elite')">Join Elite</button>
+                    <button class="pricing-btn pricing-btn-vip" onclick="selectPlan('vip')">Join VIP</button>
                 </div>
             </div>
             
@@ -533,6 +559,32 @@
             </div>
         </div>
     </footer>
+
+    <!-- Floating Action Menu -->
+    <div class="floating-menu" id="floating-menu">
+        <button class="fab-main" onclick="toggleFloatingMenu()" title="Quick Actions">
+            <span class="fab-icon">💕</span>
+            <span class="fab-close" style="display: none;">×</span>
+        </button>
+        <div class="fab-options" id="fab-options">
+            <button class="fab-option" onclick="app.showMoodCheckIn()" title="Mood Check-In">
+                <span class="fab-emoji">😊</span>
+                <span class="fab-label">Mood</span>
+            </button>
+            <button class="fab-option" onclick="app.showGoalTracking()" title="Goal Tracking">
+                <span class="fab-emoji">🎯</span>
+                <span class="fab-label">Goals</span>
+            </button>
+            <button class="fab-option" onclick="showMemoryBank()" title="Memory Bank">
+                <span class="fab-emoji">🧠</span>
+                <span class="fab-label">Memories</span>
+            </button>
+            <button class="fab-option" onclick="showReferralProgram()" title="Invite Friends">
+                <span class="fab-emoji">🎁</span>
+                <span class="fab-label">Refer</span>
+            </button>
+        </div>
+    </div>
 
     <!-- Modals -->
     <div id="login-modal" class="modal">
