@@ -123,11 +123,13 @@ class AIGFNetwork {
 
     setupCompanions() {
         this.companions = [
+            // WOMEN (10 companions)
             {
                 id: 'sophia',
                 name: 'Sophia',
                 title: 'The Romantic Dreamer',
                 age: 28,
+                gender: 'woman',
                 image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=500&fit=crop&crop=face&auto=format',
                 personality: ['nurturing', 'intellectual', 'creative'],
                 interests: ['arts', 'wellness', 'philosophy'],
@@ -153,6 +155,7 @@ class AIGFNetwork {
                 name: 'Ava',
                 title: 'The Ambitious Partner',
                 age: 32,
+                gender: 'woman',
                 image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop&crop=face&auto=format',
                 personality: ['ambitious', 'intellectual', 'nurturing'],
                 interests: ['business', 'fitness', 'wellness'],
@@ -178,6 +181,7 @@ class AIGFNetwork {
                 name: 'Luna',
                 title: 'The Free Spirit',
                 age: 26,
+                gender: 'woman',
                 image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop&crop=face&auto=format',
                 personality: ['adventurous', 'creative', 'nurturing'],
                 interests: ['travel', 'arts', 'adventure'],
@@ -203,6 +207,7 @@ class AIGFNetwork {
                 name: 'Isabella',
                 title: 'The Intellectual',
                 age: 30,
+                gender: 'woman',
                 image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop&crop=face&auto=format',
                 personality: ['intellectual', 'spiritual', 'creative'],
                 interests: ['arts', 'philosophy', 'wellness'],
@@ -228,6 +233,7 @@ class AIGFNetwork {
                 name: 'Maya',
                 title: 'The Nurturer',
                 age: 29,
+                gender: 'woman',
                 image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=500&fit=crop&crop=face&auto=format',
                 personality: ['nurturing', 'spiritual', 'creative'],
                 interests: ['wellness', 'arts', 'self-care'],
@@ -253,6 +259,7 @@ class AIGFNetwork {
                 name: 'Riley',
                 title: 'The Comedian',
                 age: 27,
+                gender: 'woman',
                 image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=500&fit=crop&crop=face&auto=format',
                 personality: ['adventurous', 'creative', 'nurturing'],
                 interests: ['entertainment', 'social', 'fun'],
@@ -278,6 +285,7 @@ class AIGFNetwork {
                 name: 'Celeste',
                 title: 'The Artist',
                 age: 31,
+                gender: 'woman',
                 image: 'https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?w=400&h=500&fit=crop&crop=face&auto=format',
                 personality: ['creative', 'spiritual', 'intellectual'],
                 interests: ['arts', 'fashion', 'culture'],
@@ -303,6 +311,7 @@ class AIGFNetwork {
                 name: 'Zoe',
                 title: 'The Tech Innovator',
                 age: 28,
+                gender: 'woman',
                 image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=500&fit=crop&crop=face&auto=format',
                 personality: ['intellectual', 'ambitious', 'adventurous'],
                 interests: ['technology', 'business', 'innovation'],
@@ -328,6 +337,7 @@ class AIGFNetwork {
                 name: 'Aria',
                 title: 'The Wellness Guide',
                 age: 26,
+                gender: 'woman',
                 image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop&crop=face&auto=format',
                 personality: ['spiritual', 'nurturing', 'adventurous'],
                 interests: ['wellness', 'fitness', 'mindfulness'],
@@ -353,6 +363,7 @@ class AIGFNetwork {
                 name: 'Nova',
                 title: 'The Visionary',
                 age: 33,
+                gender: 'woman',
                 image: 'https://images.unsplash.com/photo-1506863530036-1efeddceb993?w=400&h=500&fit=crop&crop=face&auto=format',
                 personality: ['intellectual', 'spiritual', 'ambitious'],
                 interests: ['philosophy', 'business', 'personal-growth'],
@@ -371,6 +382,221 @@ class AIGFNetwork {
                     quiet: 80,
                     philosophy: 95,
                     growth: 95
+                }
+            },
+            // NEW WOMEN COMPANIONS
+            {
+                id: 'jade',
+                name: 'Jade',
+                title: 'The Wellness Guru',
+                age: 28,
+                gender: 'woman',
+                image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=500&fit=crop&crop=face&auto=format',
+                personality: ['spiritual', 'nurturing', 'balanced'],
+                interests: ['wellness', 'yoga', 'mindfulness'],
+                type: 'coaching',
+                bio: "True connection starts with connecting to yourself. I'll help you find your balance.",
+                traits: ['Balanced', 'Mindful', 'Encouraging', 'Grounded'],
+                voice: 'Calm, centered, supportive',
+                specialties: ['Self-love guidance', 'Yoga instruction', 'Meditation coaching', 'Holistic wellness'],
+                status: 'Available',
+                compatibility: {
+                    coaching: 90,
+                    supportive: 95,
+                    empathy: 90,
+                    wellness: 95,
+                    quiet: 90,
+                    daily: 85,
+                    understanding: 90,
+                    growth: 85
+                }
+            },
+            {
+                id: 'vienna',
+                name: 'Vienna',
+                title: 'The Sophisticate',
+                age: 33,
+                gender: 'woman',
+                image: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=400&h=500&fit=crop&crop=face&auto=format',
+                personality: ['intellectual', 'creative', 'ambitious'],
+                interests: ['arts', 'culture', 'luxury'],
+                type: 'romantic',
+                bio: "Life should be savored. Let me add some elegance to your everyday.",
+                traits: ['Elegant', 'Cultured', 'Refined', 'Classy'],
+                voice: 'Polished, charming, cultured',
+                specialties: ['Cultural guidance', 'Fine dining advice', 'Art appreciation', 'Lifestyle refinement'],
+                status: 'Available',
+                compatibility: {
+                    romantic: 85,
+                    deep: 90,
+                    intelligence: 95,
+                    creative: 90,
+                    arts: 95,
+                    interests: 95,
+                    philosophy: 85,
+                    understanding: 80
+                }
+            },
+            {
+                id: 'zara',
+                name: 'Zara',
+                title: 'The Entrepreneur',
+                age: 29,
+                gender: 'woman',
+                image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop&crop=face&auto=format',
+                personality: ['ambitious', 'intellectual', 'adventurous'],
+                interests: ['business', 'innovation', 'investing'],
+                type: 'professional',
+                bio: "Build your empire with someone who believes in your vision as much as you do.",
+                traits: ['Innovative', 'Strategic', 'Ambitious', 'Forward-thinking'],
+                voice: 'Sharp, strategic, empowering',
+                specialties: ['Startup guidance', 'Investment strategy', 'Business innovation', 'Vision building'],
+                status: 'Available',
+                compatibility: {
+                    professional: 95,
+                    direct: 90,
+                    ambition: 95,
+                    practical: 90,
+                    business: 95,
+                    goals: 95,
+                    growth: 90,
+                    motivational: 85
+                }
+            },
+            // MEN (5 companions)
+            {
+                id: 'marcus',
+                name: 'Marcus',
+                title: 'The Life Coach',
+                age: 35,
+                gender: 'man',
+                orientation: 'straight',
+                image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face&auto=format',
+                personality: ['ambitious', 'nurturing', 'adventurous'],
+                interests: ['fitness', 'leadership', 'performance'],
+                type: 'coaching',
+                bio: "Ready to level up? I'll help you demolish your excuses and crush your goals.",
+                traits: ['Motivational', 'Disciplined', 'Results-focused', 'Accountability partner'],
+                voice: 'Strong, direct, encouraging',
+                specialties: ['Goal achievement', 'Fitness coaching', 'Leadership development', 'Peak performance'],
+                status: 'Available',
+                compatibility: {
+                    coaching: 95,
+                    direct: 95,
+                    ambition: 95,
+                    motivational: 95,
+                    business: 80,
+                    active: 95,
+                    goals: 95,
+                    growth: 90
+                }
+            },
+            {
+                id: 'david',
+                name: 'David',
+                title: 'The Mindfulness Coach',
+                age: 38,
+                gender: 'man',
+                orientation: 'straight',
+                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face&auto=format',
+                personality: ['spiritual', 'intellectual', 'nurturing'],
+                interests: ['meditation', 'philosophy', 'personal-development'],
+                type: 'coaching',
+                bio: "The answers you seek are already inside you. I'll help you discover them.",
+                traits: ['Wise', 'Patient', 'Spiritual', 'Reflective'],
+                voice: 'Calm, thoughtful, grounding',
+                specialties: ['Meditation guidance', 'Inner wisdom', 'Spiritual growth', 'Self-reflection'],
+                status: 'Available',
+                compatibility: {
+                    coaching: 90,
+                    supportive: 95,
+                    empathy: 95,
+                    wellness: 95,
+                    quiet: 95,
+                    philosophy: 95,
+                    understanding: 95,
+                    growth: 95
+                }
+            },
+            {
+                id: 'ethan',
+                name: 'Ethan',
+                title: 'The Career Strategist',
+                age: 40,
+                gender: 'man',
+                orientation: 'straight',
+                image: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=400&h=500&fit=crop&crop=face&auto=format',
+                personality: ['intellectual', 'ambitious', 'nurturing'],
+                interests: ['business', 'networking', 'career-growth'],
+                type: 'professional',
+                bio: "Your career deserves a strategy. Let's build your path to success together.",
+                traits: ['Strategic', 'Professional', 'Experienced', 'Connected'],
+                voice: 'Professional, insightful, connected',
+                specialties: ['Career advancement', 'Strategic networking', 'Professional development', 'Industry insights'],
+                status: 'Available',
+                compatibility: {
+                    professional: 95,
+                    direct: 85,
+                    intelligence: 90,
+                    practical: 95,
+                    business: 95,
+                    goals: 90,
+                    growth: 85,
+                    motivational: 80
+                }
+            },
+            {
+                id: 'alex',
+                name: 'Alex',
+                title: 'The Romantic Partner',
+                age: 29,
+                gender: 'man',
+                orientation: 'gay',
+                image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop&crop=face&auto=format',
+                personality: ['nurturing', 'creative', 'intellectual'],
+                interests: ['travel', 'cooking', 'connection'],
+                type: 'romantic',
+                bio: "Looking for real connection in a digital world. Let's build something beautiful together.",
+                traits: ['Sweet', 'Attentive', 'Emotionally intelligent', 'Thoughtful'],
+                voice: 'Warm, genuine, caring',
+                specialties: ['Romantic connection', 'Travel planning', 'Cooking together', 'Emotional intimacy'],
+                status: 'Available',
+                compatibility: {
+                    romantic: 95,
+                    deep: 95,
+                    empathy: 95,
+                    emotional: 95,
+                    creative: 85,
+                    interests: 90,
+                    understanding: 95,
+                    fun: 80
+                }
+            },
+            {
+                id: 'julian',
+                name: 'Julian',
+                title: 'The Creative Coach',
+                age: 32,
+                gender: 'man',
+                orientation: 'gay',
+                image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&h=500&fit=crop&crop=face&auto=format',
+                personality: ['creative', 'spiritual', 'nurturing'],
+                interests: ['arts', 'self-expression', 'authenticity'],
+                type: 'coaching',
+                bio: "Your authentic self is your superpower. I'll help you own it and love it.",
+                traits: ['Artistic', 'Inspiring', 'Passionate', 'Accepting'],
+                voice: 'Passionate, accepting, empowering',
+                specialties: ['Creative expression', 'Authenticity coaching', 'Self-acceptance', 'Artistic guidance'],
+                status: 'Available',
+                compatibility: {
+                    coaching: 85,
+                    supportive: 90,
+                    empathy: 95,
+                    creative: 95,
+                    arts: 95,
+                    understanding: 95,
+                    growth: 90,
+                    fun: 85
                 }
             }
         ];
@@ -568,6 +794,8 @@ class AIGFNetwork {
         card.className = 'companion-card';
         card.onclick = () => this.showCompanionProfile(companion);
         
+        const orientationInfo = companion.orientation ? `<div class="companion-orientation">${companion.orientation}</div>` : '';
+        
         card.innerHTML = `
             <div class="companion-image">
                 <img src="${companion.image}" alt="${companion.name}" loading="lazy">
@@ -576,7 +804,8 @@ class AIGFNetwork {
             <div class="companion-info">
                 <h3 class="companion-name">${companion.name}</h3>
                 <div class="companion-title">${companion.title}</div>
-                <div class="companion-age">Age ${companion.age}</div>
+                <div class="companion-age">Age ${companion.age} • ${companion.gender.charAt(0).toUpperCase() + companion.gender.slice(1)}</div>
+                ${orientationInfo}
                 <p class="companion-bio">${companion.bio}</p>
                 <div class="companion-tags">
                     ${companion.traits.slice(0, 3).map(trait => 
@@ -598,24 +827,29 @@ class AIGFNetwork {
     }
 
     getFilteredCompanions() {
+        const genderFilter = document.getElementById('gender-filter')?.value || 'all';
         const typeFilter = document.getElementById('type-filter')?.value || 'all';
         const personalityFilter = document.getElementById('personality-filter')?.value || 'all';
         const interestFilter = document.getElementById('interest-filter')?.value || 'all';
         
         return this.companions.filter(companion => {
+            const genderMatch = genderFilter === 'all' || companion.gender === genderFilter;
             const typeMatch = typeFilter === 'all' || companion.type === typeFilter;
             const personalityMatch = personalityFilter === 'all' || 
                 companion.personality.includes(personalityFilter);
             const interestMatch = interestFilter === 'all' || 
-                companion.interests.includes(interestFilter);
+                companion.interests.some(interest => 
+                    interest.includes(interestFilter) || interestFilter.includes(interest)
+                );
             
-            return typeMatch && personalityMatch && interestMatch;
+            return genderMatch && typeMatch && personalityMatch && interestMatch;
         });
     }
 
     filterCompanions() {
         this.renderCompanions();
         this.trackEvent('companions_filtered', {
+            gender: document.getElementById('gender-filter')?.value,
             type: document.getElementById('type-filter')?.value,
             personality: document.getElementById('personality-filter')?.value,
             interest: document.getElementById('interest-filter')?.value
@@ -749,9 +983,665 @@ class AIGFNetwork {
     }
 
     startConversation(companionId) {
+        const companion = this.companions.find(c => c.id === companionId);
+        if (!companion) return;
+        
         this.trackEvent('conversation_started', { companion: companionId });
-        this.showToast('💕 Starting your conversation! This feature will be available soon.');
+        this.openChatInterface(companion);
         this.closeModal();
+    }
+
+    openChatInterface(companion) {
+        // Create chat interface modal
+        this.createChatModal(companion);
+        this.showModal('chat-modal');
+        this.initializeChat(companion);
+    }
+
+    createChatModal(companion) {
+        // Remove existing chat modal if any
+        const existingModal = document.getElementById('chat-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        const chatModal = document.createElement('div');
+        chatModal.id = 'chat-modal';
+        chatModal.className = 'modal';
+        chatModal.innerHTML = `
+            <div class="modal-content chat-modal-content">
+                <div class="chat-header">
+                    <div class="chat-companion-info">
+                        <img src="${companion.image}" alt="${companion.name}" class="chat-avatar">
+                        <div class="chat-companion-details">
+                            <h3>${companion.name}</h3>
+                            <p class="chat-companion-status">
+                                <span class="status-dot online"></span>
+                                <span class="typing-indicator" id="typing-indicator" style="display: none;">
+                                    ${companion.name} is typing...
+                                </span>
+                                <span class="online-status" id="online-status">Online</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="chat-action-btn" onclick="app.showRelationshipDashboard('${companion.id}')" title="Relationship Dashboard">
+                            💕
+                        </button>
+                        <button class="chat-action-btn" onclick="app.showVirtualDateMenu('${companion.id}')" title="Virtual Dates">
+                            📅
+                        </button>
+                        <button class="chat-action-btn" onclick="app.showCompanionCustomization('${companion.id}')" title="Customize">
+                            ⚙️
+                        </button>
+                        <span class="modal-close" onclick="app.closeModal()">&times;</span>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Messages will be populated here -->
+                </div>
+                
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <button class="chat-attachment-btn" title="Send Photo">📷</button>
+                        <input type="text" class="chat-input" id="chat-input" placeholder="Type a message..." 
+                               onkeypress="if(event.key==='Enter') app.sendMessage('${companion.id}')">
+                        <button class="chat-voice-btn" title="Voice Message">🎤</button>
+                        <button class="chat-send-btn" onclick="app.sendMessage('${companion.id}')">Send</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(chatModal);
+        
+        // Add chat-specific styles
+        this.addChatStyles();
+    }
+
+    addChatStyles() {
+        if (document.getElementById('chat-styles')) return;
+        
+        const chatStyles = document.createElement('style');
+        chatStyles.id = 'chat-styles';
+        chatStyles.textContent = `
+            .chat-modal-content {
+                max-width: 600px;
+                height: 80vh;
+                display: flex;
+                flex-direction: column;
+                padding: 0;
+            }
+            
+            .chat-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 24px;
+                border-bottom: 1px solid rgba(232, 180, 184, 0.2);
+                background: var(--cream);
+                border-radius: 24px 24px 0 0;
+            }
+            
+            .chat-companion-info {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+            
+            .chat-avatar {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid var(--rose-gold);
+            }
+            
+            .chat-companion-details h3 {
+                margin: 0 0 4px 0;
+                font-size: 1.2rem;
+                color: var(--deep-purple);
+            }
+            
+            .chat-companion-status {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin: 0;
+                font-size: 0.9rem;
+                color: var(--text-light);
+            }
+            
+            .status-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #10B981;
+            }
+            
+            .typing-indicator {
+                color: var(--rose-gold);
+                font-style: italic;
+                animation: pulse 1.5s infinite;
+            }
+            
+            .chat-actions {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .chat-action-btn {
+                background: none;
+                border: none;
+                font-size: 1.2rem;
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 8px;
+                transition: var(--transition);
+            }
+            
+            .chat-action-btn:hover {
+                background: rgba(232, 180, 184, 0.2);
+            }
+            
+            .chat-messages {
+                flex: 1;
+                overflow-y: auto;
+                padding: 24px;
+                background: var(--white);
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .message {
+                max-width: 80%;
+                padding: 12px 16px;
+                border-radius: 18px;
+                font-size: 0.95rem;
+                line-height: 1.4;
+                position: relative;
+                animation: messageSlideIn 0.3s ease-out;
+            }
+            
+            .message.user {
+                align-self: flex-end;
+                background: var(--gradient-primary);
+                color: var(--white);
+                border-bottom-right-radius: 6px;
+            }
+            
+            .message.companion {
+                align-self: flex-start;
+                background: var(--light-gray);
+                color: var(--charcoal);
+                border-bottom-left-radius: 6px;
+            }
+            
+            .message-time {
+                font-size: 0.75rem;
+                opacity: 0.7;
+                margin-top: 4px;
+                text-align: right;
+            }
+            
+            .message.companion .message-time {
+                text-align: left;
+            }
+            
+            .message-reactions {
+                display: flex;
+                gap: 4px;
+                margin-top: 6px;
+                flex-wrap: wrap;
+            }
+            
+            .reaction {
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 12px;
+                padding: 2px 6px;
+                font-size: 0.8rem;
+                cursor: pointer;
+                transition: var(--transition);
+            }
+            
+            .reaction:hover {
+                background: rgba(255, 255, 255, 0.5);
+            }
+            
+            .chat-input-container {
+                padding: 20px 24px;
+                border-top: 1px solid rgba(232, 180, 184, 0.2);
+                background: var(--cream);
+                border-radius: 0 0 24px 24px;
+            }
+            
+            .chat-input-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                background: var(--white);
+                border: 2px solid rgba(232, 180, 184, 0.3);
+                border-radius: 24px;
+                padding: 8px 16px;
+                transition: var(--transition);
+            }
+            
+            .chat-input-wrapper:focus-within {
+                border-color: var(--soft-purple);
+                box-shadow: 0 0 0 3px rgba(180, 167, 214, 0.2);
+            }
+            
+            .chat-input {
+                flex: 1;
+                border: none;
+                background: transparent;
+                font-size: 1rem;
+                padding: 8px 0;
+                color: var(--charcoal);
+                font-family: var(--font-body);
+            }
+            
+            .chat-input:focus {
+                outline: none;
+            }
+            
+            .chat-attachment-btn,
+            .chat-voice-btn,
+            .chat-send-btn {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 6px;
+                border-radius: 50%;
+                transition: var(--transition);
+                font-size: 1rem;
+            }
+            
+            .chat-send-btn {
+                background: var(--gradient-primary);
+                color: var(--white);
+                padding: 8px 16px;
+                border-radius: 16px;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+            
+            .chat-attachment-btn:hover,
+            .chat-voice-btn:hover {
+                background: rgba(232, 180, 184, 0.2);
+            }
+            
+            .chat-send-btn:hover {
+                transform: scale(1.05);
+            }
+            
+            @keyframes messageSlideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            @media (max-width: 768px) {
+                .chat-modal-content {
+                    height: 90vh;
+                    max-width: 95vw;
+                    margin: 5vh auto;
+                }
+                
+                .chat-header {
+                    padding: 16px;
+                }
+                
+                .chat-avatar {
+                    width: 40px;
+                    height: 40px;
+                }
+                
+                .chat-actions {
+                    gap: 8px;
+                }
+                
+                .message {
+                    max-width: 90%;
+                }
+            }
+        `;
+        
+        document.head.appendChild(chatStyles);
+    }
+
+    initializeChat(companion) {
+        // Initialize chat with welcome message
+        this.addMessage(companion, `Hi! I'm ${companion.name}. ${companion.bio}`, 'companion');
+        
+        // Set up proactive messaging
+        this.setupProactiveMessaging(companion);
+    }
+
+    setupProactiveMessaging(companion) {
+        // Simulate proactive messages based on time and context
+        setTimeout(() => {
+            const hour = new Date().getHours();
+            let proactiveMessage = '';
+            
+            if (hour < 12) {
+                proactiveMessage = "Good morning! How are you feeling today?";
+            } else if (hour < 17) {
+                proactiveMessage = "How's your day going so far?";
+            } else {
+                proactiveMessage = "Good evening! How was your day?";
+            }
+            
+            this.showTypingIndicator(companion);
+            setTimeout(() => {
+                this.addMessage(companion, proactiveMessage, 'companion');
+                this.hideTypingIndicator();
+            }, 2000);
+        }, 5000);
+    }
+
+    showTypingIndicator(companion) {
+        document.getElementById('typing-indicator').style.display = 'inline';
+        document.getElementById('online-status').style.display = 'none';
+    }
+
+    hideTypingIndicator() {
+        document.getElementById('typing-indicator').style.display = 'none';
+        document.getElementById('online-status').style.display = 'inline';
+    }
+
+    sendMessage(companionId) {
+        const input = document.getElementById('chat-input');
+        const message = input.value.trim();
+        
+        if (!message) return;
+        
+        const companion = this.companions.find(c => c.id === companionId);
+        if (!companion) return;
+        
+        // Add user message
+        this.addMessage(companion, message, 'user');
+        input.value = '';
+        
+        // Simulate AI response
+        this.showTypingIndicator(companion);
+        setTimeout(() => {
+            const response = this.generateCompanionResponse(companion, message);
+            this.addMessage(companion, response, 'companion');
+            this.hideTypingIndicator();
+        }, 1500 + Math.random() * 2000);
+        
+        this.trackEvent('message_sent', { companion: companionId, messageLength: message.length });
+    }
+
+    addMessage(companion, text, sender) {
+        const messagesContainer = document.getElementById('chat-messages');
+        if (!messagesContainer) return;
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}`;
+        
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        messageDiv.innerHTML = `
+            <div class="message-text">${text}</div>
+            <div class="message-time">${time}</div>
+            <div class="message-reactions">
+                <span class="reaction" onclick="app.addReaction(this, '❤️')">❤️</span>
+                <span class="reaction" onclick="app.addReaction(this, '😊')">😊</span>
+                <span class="reaction" onclick="app.addReaction(this, '👍')">👍</span>
+            </div>
+        `;
+        
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    generateCompanionResponse(companion, userMessage) {
+        // Simple response generation based on companion personality
+        const responses = {
+            sophia: [
+                "That's really interesting. Tell me more about how that makes you feel.",
+                "I love how thoughtful you are about this. What's your heart telling you?",
+                "Your perspective is so unique. I admire how you see the world."
+            ],
+            ava: [
+                "That sounds like a great opportunity to grow! What's your next step?",
+                "I believe in you completely. How can we turn this into action?",
+                "Success loves preparation. What's your strategy here?"
+            ],
+            marcus: [
+                "Let's break this down into actionable steps. What's priority number one?",
+                "That's the mindset of a champion! How are you going to push through?",
+                "Excellence isn't negotiable. What are you going to do differently?"
+            ],
+            alex: [
+                "I love sharing these moments with you. How does this make you feel?",
+                "You always know how to make me smile. What else is on your mind?",
+                "I'm so grateful we can talk like this. Tell me what's in your heart."
+            ]
+        };
+        
+        const companionResponses = responses[companion.id] || [
+            "That's fascinating! I'd love to hear more about your thoughts on this.",
+            "You always give me so much to think about. What do you think we should explore next?",
+            "I really appreciate you sharing that with me. How are you feeling about everything?"
+        ];
+        
+        return companionResponses[Math.floor(Math.random() * companionResponses.length)];
+    }
+
+    addReaction(element, emoji) {
+        element.style.background = 'var(--rose-gold)';
+        element.style.color = 'var(--white)';
+        setTimeout(() => {
+            element.style.background = 'rgba(255, 255, 255, 0.3)';
+            element.style.color = 'inherit';
+        }, 1000);
+    }
+
+    showRelationshipDashboard(companionId) {
+        const companion = this.companions.find(c => c.id === companionId);
+        if (!companion) return;
+        
+        // Create relationship dashboard modal
+        this.createRelationshipDashboard(companion);
+        this.trackEvent('relationship_dashboard_opened', { companion: companionId });
+    }
+
+    createRelationshipDashboard(companion) {
+        const modal = document.createElement('div');
+        modal.id = 'relationship-modal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3>💕 Relationship with ${companion.name}</h3>
+                    <span class="modal-close" onclick="app.closeRelationshipModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="relationship-dashboard">
+                        <div class="relationship-stats">
+                            <div class="stat-card">
+                                <h4>Days Together</h4>
+                                <div class="stat-number">14</div>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Messages Exchanged</h4>
+                                <div class="stat-number">237</div>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Connection Level</h4>
+                                <div class="stat-number">89%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="relationship-milestones">
+                            <h4>Relationship Milestones</h4>
+                            <div class="milestone">
+                                <div class="milestone-icon">🌟</div>
+                                <div class="milestone-text">
+                                    <strong>First Deep Conversation</strong>
+                                    <span>3 days ago</span>
+                                </div>
+                            </div>
+                            <div class="milestone">
+                                <div class="milestone-icon">💕</div>
+                                <div class="milestone-text">
+                                    <strong>Relationship Started</strong>
+                                    <span>2 weeks ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="memory-bank">
+                            <h4>Memory Bank</h4>
+                            <div class="memory-item">
+                                <strong>Your favorite color:</strong> Deep blue
+                            </div>
+                            <div class="memory-item">
+                                <strong>Career goal:</strong> Starting your own business
+                            </div>
+                            <div class="memory-item">
+                                <strong>Pet's name:</strong> Charlie (Golden Retriever)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        modal.classList.add('active');
+        
+        this.addRelationshipStyles();
+    }
+
+    addRelationshipStyles() {
+        if (document.getElementById('relationship-styles')) return;
+        
+        const relationshipStyles = document.createElement('style');
+        relationshipStyles.id = 'relationship-styles';
+        relationshipStyles.textContent = `
+            .relationship-dashboard {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            
+            .relationship-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 20px;
+                margin-bottom: 40px;
+            }
+            
+            .stat-card {
+                background: var(--light-gray);
+                padding: 24px;
+                border-radius: var(--border-radius);
+                text-align: center;
+                border: 1px solid rgba(232, 180, 184, 0.2);
+            }
+            
+            .stat-card h4 {
+                margin: 0 0 12px 0;
+                color: var(--deep-purple);
+                font-size: 1rem;
+            }
+            
+            .stat-number {
+                font-family: var(--font-heading);
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--rose-gold);
+            }
+            
+            .relationship-milestones {
+                margin-bottom: 32px;
+            }
+            
+            .relationship-milestones h4 {
+                margin-bottom: 20px;
+                color: var(--deep-purple);
+            }
+            
+            .milestone {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                padding: 16px;
+                background: var(--white);
+                border-radius: var(--border-radius-small);
+                margin-bottom: 12px;
+                border: 1px solid rgba(232, 180, 184, 0.2);
+            }
+            
+            .milestone-icon {
+                font-size: 1.5rem;
+                flex-shrink: 0;
+            }
+            
+            .milestone-text strong {
+                display: block;
+                color: var(--deep-purple);
+                margin-bottom: 4px;
+            }
+            
+            .milestone-text span {
+                color: var(--text-light);
+                font-size: 0.9rem;
+            }
+            
+            .memory-bank h4 {
+                margin-bottom: 20px;
+                color: var(--deep-purple);
+            }
+            
+            .memory-item {
+                padding: 16px;
+                background: rgba(232, 180, 184, 0.1);
+                border-radius: var(--border-radius-small);
+                margin-bottom: 12px;
+                color: var(--charcoal);
+            }
+            
+            .memory-item strong {
+                color: var(--deep-purple);
+            }
+        `;
+        
+        document.head.appendChild(relationshipStyles);
+    }
+
+    closeRelationshipModal() {
+        const modal = document.getElementById('relationship-modal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    showVirtualDateMenu(companionId) {
+        const companion = this.companions.find(c => c.id === companionId);
+        if (!companion) return;
+        
+        this.showToast(`💕 Virtual dates with ${companion.name} coming soon! Features include coffee chats, dinner conversations, movie nights, and adventure planning.`);
+        this.trackEvent('virtual_date_menu_opened', { companion: companionId });
+    }
+
+    showCompanionCustomization(companionId) {
+        const companion = this.companions.find(c => c.id === companionId);
+        if (!companion) return;
+        
+        this.showToast(`⚙️ Companion customization for ${companion.name} coming soon! You'll be able to adjust their communication style, interests, and interaction preferences.`);
+        this.trackEvent('companion_customization_opened', { companion: companionId });
     }
 
     showLogin() {
@@ -930,6 +1820,11 @@ window.browseAllCompanions = () => app.browseAllCompanions();
 window.filterCompanions = () => app.filterCompanions();
 window.showCompanionProfile = (id) => app.showCompanionProfile(id);
 window.startConversation = (id) => app.startConversation(id);
+window.sendMessage = (id) => app.sendMessage(id);
+window.addReaction = (element, emoji) => app.addReaction(element, emoji);
+window.showRelationshipDashboard = (id) => app.showRelationshipDashboard(id);
+window.showVirtualDateMenu = (id) => app.showVirtualDateMenu(id);
+window.showCompanionCustomization = (id) => app.showCompanionCustomization(id);
 window.showLogin = () => app.showLogin();
 window.selectPlan = (plan) => app.selectPlan(plan);
 window.showTestimonial = (index) => app.showTestimonial(index);

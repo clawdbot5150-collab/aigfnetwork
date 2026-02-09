@@ -192,6 +192,15 @@
             
             <div class="filter-bar">
                 <div class="filter-group">
+                    <label>Gender:</label>
+                    <select id="gender-filter" onchange="filterCompanions()">
+                        <option value="all">All Genders</option>
+                        <option value="woman">Women</option>
+                        <option value="man">Men</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
                     <label>Type:</label>
                     <select id="type-filter" onchange="filterCompanions()">
                         <option value="all">All Types</option>
@@ -212,6 +221,7 @@
                         <option value="ambitious">Ambitious</option>
                         <option value="creative">Creative</option>
                         <option value="spiritual">Spiritual</option>
+                        <option value="balanced">Balanced</option>
                     </select>
                 </div>
                 
@@ -225,6 +235,10 @@
                         <option value="wellness">Wellness</option>
                         <option value="travel">Travel</option>
                         <option value="technology">Technology</option>
+                        <option value="philosophy">Philosophy</option>
+                        <option value="meditation">Meditation</option>
+                        <option value="leadership">Leadership</option>
+                        <option value="innovation">Innovation</option>
                     </select>
                 </div>
             </div>
