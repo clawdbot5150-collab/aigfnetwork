@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+
+# Disallow sensitive areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /user/
+
+# Allow important pages
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /companions/
+Allow: /quiz/
+Allow: /pricing/
+
+Sitemap: https://aigfnetwork.com/sitemap.xml
+
+# AI Girlfriend Network - Premium AI Companion Platform
+# https://aigfnetwork.com
+# Real Connection. Real Support. Always There.
+# Sophisticated AI companions for emotional support and meaningful relationships
