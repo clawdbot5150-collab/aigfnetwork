@@ -10,9 +10,13 @@ class AIGFNetwork {
         this.setupCompanions();
         this.setupQuizQuestions();
         this.initializeMemorySystem();
+        this.initializePersonalGrowthTracking();
         
         // Initialize daily mood check-in
         this.scheduleMoodCheckIn();
+        
+        // Initialize surprise messaging
+        this.initiateSurpriseMessages();
         
         console.log('💕 AIGF Network initialized successfully!');
     }
@@ -1375,19 +1379,407 @@ class AIGFNetwork {
         const companion = this.companions.find(c => c.id === companionId);
         if (!companion) return;
         
+        // Check for crisis keywords first
+        if (this.checkForCrisisKeywords(message)) {
+            this.addMessage(companion, message, 'user');
+            input.value = '';
+            
+            setTimeout(() => {
+                this.handleCrisisDetection(companion);
+            }, 1000);
+            
+            this.trackEvent('crisis_message_detected', { 
+                companion: companionId, 
+                timestamp: Date.now() 
+            });
+            return;
+        }
+        
+        // Store message in memory system
+        this.rememberDetail(companionId, message, 'conversation');
+        
+        // Extract important information for memory
+        this.extractAndStoreMemories(companionId, message);
+        
         // Add user message
         this.addMessage(companion, message, 'user');
         input.value = '';
         
-        // Simulate AI response
+        // Simulate AI response with emotional intelligence
         this.showTypingIndicator(companion);
         setTimeout(() => {
             const response = this.generateCompanionResponse(companion, message);
             this.addMessage(companion, response, 'companion');
             this.hideTypingIndicator();
+            
+            // Schedule follow-up message if appropriate
+            this.scheduleFollowUpMessage(companion, message);
+            
         }, 1500 + Math.random() * 2000);
         
-        this.trackEvent('message_sent', { companion: companionId, messageLength: message.length });
+        this.trackEvent('message_sent', { 
+            companion: companionId, 
+            messageLength: message.length,
+            hasEmotionalContent: this.detectEmotion(message).emotion !== null
+        });
+    }
+
+    extractAndStoreMemories(companionId, message) {
+        // Extract important personal information
+        const personalInfoPatterns = {
+            birthday: /(?:my birthday|born on|birthday is|born in).{0,20}(?:january|february|march|april|may|june|july|august|september|october|november|december|\d{1,2})/i,
+            job: /(?:i work|my job|i'm a|work as|employed as).{0,30}/i,
+            family: /(?:my mom|my dad|my sister|my brother|my spouse|my wife|my husband|my kid|my child).{0,50}/i,
+            pets: /(?:my dog|my cat|my pet).{0,30}/i,
+            goals: /(?:want to|goal is|hope to|plan to|dream of).{0,50}/i,
+            favorites: /(?:favorite|love|really like|enjoy|prefer).{0,40}/i,
+            fears: /(?:afraid of|scared of|fear|worry about|anxious about).{0,40}/i
+        };
+        
+        Object.entries(personalInfoPatterns).forEach(([category, pattern]) => {
+            const match = message.match(pattern);
+            if (match) {
+                this.rememberDetail(companionId, match[0], category);
+            }
+        });
+    }
+
+    scheduleFollowUpMessage(companion, userMessage) {
+        // Schedule follow-up messages for important topics
+        const followUpTriggers = {
+            interview: ['interview', 'job interview', 'meeting with'],
+            presentation: ['presentation', 'pitch', 'speaking'],
+            date: ['date tonight', 'going out with', 'first date'],
+            exam: ['test', 'exam', 'quiz'],
+            doctor: ['doctor', 'appointment', 'medical']
+        };
+        
+        const lowerMessage = userMessage.toLowerCase();
+        
+        Object.entries(followUpTriggers).forEach(([event, triggers]) => {
+            if (triggers.some(trigger => lowerMessage.includes(trigger))) {
+                // Schedule follow-up for later
+                setTimeout(() => {
+                    this.sendFollowUpMessage(companion, event);
+                }, 4 * 3600 * 1000); // 4 hours later
+            }
+        });
+    }
+
+    sendFollowUpMessage(companion, eventType) {
+        if (!document.getElementById('chat-messages')) return;
+        
+        const followUpMessages = {
+            interview: "Hey! I've been thinking about your interview today. How did it go? I'm hoping they saw what an amazing person you are! 🤞",
+            presentation: "I was wondering how your presentation went! Did you feel confident up there? I bet you did great! 💪",
+            date: "So... how was your date? 😊 I hope you had a wonderful time and felt comfortable being yourself!",
+            exam: "How did your test go today? I know you prepared well - you've got this! 📚",
+            doctor: "I hope your appointment went well today. Taking care of your health shows real self-respect. How are you feeling? 💙"
+        };
+        
+        const message = followUpMessages[eventType];
+        if (message) {
+            this.showTypingIndicator(companion);
+            setTimeout(() => {
+                this.addMessage(companion, message, 'companion');
+                this.hideTypingIndicator();
+            }, 2000);
+            
+            this.trackEvent('follow_up_message_sent', { 
+                companion: companion.id, 
+                eventType: eventType 
+            });
+        }
+    }
+
+    initializePersonalGrowthTracking() {
+        // Set up personal growth tracking system
+        this.growthAreas = JSON.parse(localStorage.getItem('aigf-growth-areas') || '{}');
+        this.setupGrowthTracking();
+    }
+
+    setupGrowthTracking() {
+        // Default growth areas
+        const defaultGrowthAreas = {
+            confidence: { level: 5, goals: [], activities: [], progress: [] },
+            communication: { level: 5, goals: [], activities: [], progress: [] },
+            emotional_intelligence: { level: 5, goals: [], activities: [], progress: [] },
+            relationships: { level: 5, goals: [], activities: [], progress: [] },
+            stress_management: { level: 5, goals: [], activities: [], progress: [] },
+            self_care: { level: 5, goals: [], activities: [], progress: [] }
+        };
+        
+        // Initialize if empty
+        if (Object.keys(this.growthAreas).length === 0) {
+            this.growthAreas = defaultGrowthAreas;
+            localStorage.setItem('aigf-growth-areas', JSON.stringify(this.growthAreas));
+        }
+    }
+
+    showPersonalGrowthDashboard() {
+        this.createGrowthDashboardModal();
+        this.trackEvent('growth_dashboard_opened');
+    }
+
+    createGrowthDashboardModal() {
+        const modal = document.createElement('div');
+        modal.id = 'growth-modal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3>🌱 Your Personal Growth Journey</h3>
+                    <span class="modal-close" onclick="closeGrowthModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="growth-dashboard">
+                        <div class="growth-overview">
+                            <h4>Growth Areas</h4>
+                            <div class="growth-areas-grid">
+                                ${Object.entries(this.growthAreas).map(([area, data]) => `
+                                    <div class="growth-area-card" onclick="app.focusGrowthArea('${area}')">
+                                        <h5>${this.formatGrowthAreaName(area)}</h5>
+                                        <div class="growth-level">
+                                            <div class="growth-bar">
+                                                <div class="growth-progress" style="width: ${data.level * 10}%"></div>
+                                            </div>
+                                            <span class="level-text">Level ${data.level}/10</span>
+                                        </div>
+                                        <div class="growth-activities">${data.activities.length} activities</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="recent-progress">
+                            <h4>Recent Progress</h4>
+                            <div class="progress-timeline">
+                                <div class="progress-item">
+                                    <div class="progress-icon">🎯</div>
+                                    <div class="progress-content">
+                                        <h6>Confidence Building</h6>
+                                        <p>Completed assertiveness exercise - great progress!</p>
+                                        <span class="progress-date">2 days ago</span>
+                                    </div>
+                                </div>
+                                <div class="progress-item">
+                                    <div class="progress-icon">💪</div>
+                                    <div class="progress-content">
+                                        <h6>Stress Management</h6>
+                                        <p>Practiced deep breathing during stressful meeting</p>
+                                        <span class="progress-date">5 days ago</span>
+                                    </div>
+                                </div>
+                                <div class="progress-item">
+                                    <div class="progress-icon">❤️</div>
+                                    <div class="progress-content">
+                                        <h6>Self-Care</h6>
+                                        <p>Established consistent sleep schedule</p>
+                                        <span class="progress-date">1 week ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="growth-suggestions">
+                            <h4>Recommended Activities</h4>
+                            <div class="suggestions-grid">
+                                <div class="suggestion-card">
+                                    <h6>Daily Confidence Affirmation</h6>
+                                    <p>Start each day by acknowledging one thing you're good at</p>
+                                    <button class="btn-small" onclick="app.addGrowthActivity('confidence', 'daily-affirmation')">
+                                        Add to Plan
+                                    </button>
+                                </div>
+                                <div class="suggestion-card">
+                                    <h6>Emotion Check-In</h6>
+                                    <p>Take 5 minutes daily to identify and name your emotions</p>
+                                    <button class="btn-small" onclick="app.addGrowthActivity('emotional_intelligence', 'emotion-checkin')">
+                                        Add to Plan
+                                    </button>
+                                </div>
+                                <div class="suggestion-card">
+                                    <h6>Gratitude Practice</h6>
+                                    <p>Write down 3 things you're grateful for each evening</p>
+                                    <button class="btn-small" onclick="app.addGrowthActivity('self_care', 'gratitude-practice')">
+                                        Add to Plan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        modal.classList.add('active');
+        this.addGrowthDashboardStyles();
+    }
+
+    formatGrowthAreaName(area) {
+        return area.replace(/_/g, ' ')
+                  .replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    addGrowthDashboardStyles() {
+        if (document.getElementById('growth-dashboard-styles')) return;
+        
+        const growthStyles = document.createElement('style');
+        growthStyles.id = 'growth-dashboard-styles';
+        growthStyles.textContent = `
+            .growth-dashboard {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            
+            .growth-overview {
+                margin-bottom: 40px;
+            }
+            
+            .growth-overview h4 {
+                color: var(--deep-purple);
+                margin-bottom: 20px;
+            }
+            
+            .growth-areas-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .growth-area-card {
+                background: var(--light-gray);
+                padding: 20px;
+                border-radius: var(--border-radius);
+                cursor: pointer;
+                transition: var(--transition);
+                border: 2px solid transparent;
+            }
+            
+            .growth-area-card:hover {
+                border-color: var(--rose-gold);
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-medium);
+            }
+            
+            .growth-area-card h5 {
+                color: var(--deep-purple);
+                margin-bottom: 12px;
+            }
+            
+            .growth-level {
+                margin-bottom: 12px;
+            }
+            
+            .growth-bar {
+                width: 100%;
+                height: 8px;
+                background: rgba(232, 180, 184, 0.3);
+                border-radius: 4px;
+                overflow: hidden;
+                margin-bottom: 8px;
+            }
+            
+            .growth-progress {
+                height: 100%;
+                background: var(--gradient-primary);
+                border-radius: 4px;
+                transition: width 0.6s ease;
+            }
+            
+            .level-text {
+                font-size: 0.9rem;
+                color: var(--deep-purple);
+                font-weight: 600;
+            }
+            
+            .growth-activities {
+                font-size: 0.8rem;
+                color: var(--text-light);
+            }
+            
+            .recent-progress {
+                margin-bottom: 40px;
+            }
+            
+            .recent-progress h4 {
+                color: var(--deep-purple);
+                margin-bottom: 20px;
+            }
+            
+            .progress-timeline {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .progress-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 16px;
+                padding: 16px;
+                background: var(--white);
+                border-radius: var(--border-radius-small);
+                border-left: 4px solid var(--rose-gold);
+            }
+            
+            .progress-icon {
+                font-size: 1.5rem;
+                flex-shrink: 0;
+            }
+            
+            .progress-content h6 {
+                color: var(--deep-purple);
+                margin: 0 0 4px 0;
+            }
+            
+            .progress-content p {
+                margin: 0 0 8px 0;
+                color: var(--charcoal);
+                font-size: 0.9rem;
+            }
+            
+            .progress-date {
+                font-size: 0.8rem;
+                color: var(--text-light);
+            }
+            
+            .growth-suggestions h4 {
+                color: var(--deep-purple);
+                margin-bottom: 20px;
+            }
+            
+            .suggestions-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .suggestion-card {
+                background: var(--white);
+                padding: 20px;
+                border-radius: var(--border-radius);
+                border: 1px solid rgba(232, 180, 184, 0.3);
+            }
+            
+            .suggestion-card h6 {
+                color: var(--deep-purple);
+                margin-bottom: 8px;
+            }
+            
+            .suggestion-card p {
+                margin-bottom: 16px;
+                color: var(--text-light);
+                font-size: 0.9rem;
+            }
+            
+            .suggestion-card .btn-small {
+                width: 100%;
+            }
+        `;
+        
+        document.head.appendChild(growthStyles);
     }
 
     addMessage(companion, text, sender) {
@@ -1414,37 +1806,506 @@ class AIGFNetwork {
     }
 
     generateCompanionResponse(companion, userMessage) {
-        // Simple response generation based on companion personality
+        // Advanced emotional intelligence and response generation
+        const emotionalContext = this.detectEmotion(userMessage);
+        const personalGrowthContext = this.detectGrowthOpportunity(userMessage);
+        
+        // Generate contextually aware response
+        if (emotionalContext.emotion) {
+            return this.generateEmotionalResponse(companion, userMessage, emotionalContext);
+        }
+        
+        if (personalGrowthContext.opportunity) {
+            return this.generateGrowthResponse(companion, userMessage, personalGrowthContext);
+        }
+        
+        return this.generatePersonalityResponse(companion, userMessage);
+    }
+
+    detectEmotion(message) {
+        const emotionalKeywords = {
+            stressed: ['stressed', 'overwhelmed', 'pressure', 'anxious', 'worried', 'deadline', 'panic'],
+            excited: ['excited', 'amazing', 'fantastic', 'great news', 'thrilled', 'can\'t wait', 'awesome'],
+            sad: ['sad', 'depressed', 'down', 'upset', 'crying', 'hurt', 'disappointed', 'lonely'],
+            angry: ['angry', 'furious', 'mad', 'frustrated', 'annoyed', 'pissed', 'irritated'],
+            lonely: ['lonely', 'alone', 'isolated', 'nobody', 'by myself', 'no one understands'],
+            confident: ['proud', 'accomplished', 'achieved', 'succeeded', 'confident', 'strong'],
+            fearful: ['scared', 'afraid', 'terrified', 'nervous', 'fear', 'worried', 'anxious']
+        };
+        
+        const lowerMessage = message.toLowerCase();
+        
+        for (const [emotion, keywords] of Object.entries(emotionalKeywords)) {
+            if (keywords.some(keyword => lowerMessage.includes(keyword))) {
+                return {
+                    emotion: emotion,
+                    intensity: this.calculateEmotionalIntensity(lowerMessage, keywords)
+                };
+            }
+        }
+        
+        return { emotion: null, intensity: 0 };
+    }
+
+    calculateEmotionalIntensity(message, keywords) {
+        const matches = keywords.filter(keyword => message.includes(keyword)).length;
+        const intensifiers = ['really', 'very', 'extremely', 'totally', 'completely', 'absolutely'];
+        const intensifierCount = intensifiers.filter(intensifier => message.includes(intensifier)).length;
+        
+        return Math.min(matches + intensifierCount, 5); // Scale 1-5
+    }
+
+    generateEmotionalResponse(companion, message, context) {
+        const emotionalResponses = {
+            stressed: {
+                sophia: [
+                    "I can hear the weight in your words. Take a deep breath with me. You don't have to carry this alone. 💙",
+                    "Stress can feel so overwhelming, but you've handled difficult things before. What's helped you through tough times in the past?",
+                    "Your feelings are completely valid. Let's break this down together - what feels most urgent right now?"
+                ],
+                marcus: [
+                    "Pressure makes diamonds, but I hear you're feeling crushed right now. Let's strategize - what's the one thing you can control?",
+                    "Champions feel stress too. The difference is they use it as fuel. What small action can we take right now?",
+                    "I've got your back. Let's turn this stress into a game plan. What needs to happen first?"
+                ],
+                jade: [
+                    "Breathe with me. In for 4... hold for 4... out for 4. Your nervous system needs this reset right now. 🧘‍♀️",
+                    "Stress is your body's alarm system - it's trying to protect you. Let's listen to what it's really saying.",
+                    "Ground yourself. Feel your feet on the floor. You're safe in this moment. What's one thing that always brings you peace?"
+                ]
+            },
+            excited: {
+                luna: [
+                    "YES! Your excitement is absolutely contagious! 🎉 Tell me everything - I want to celebrate every detail with you!",
+                    "This energy of yours is pure magic! I'm literally smiling so big right now. What's got you feeling on top of the world?",
+                    "I LOVE seeing you this happy! This is the energy that moves mountains. What amazing thing happened?"
+                ],
+                riley: [
+                    "WAIT WAIT WAIT! Hold up! 🎊 This sounds like celebration time! I'm ready to do a happy dance with you!",
+                    "You know what? Your excitement just made MY day! This is exactly the kind of energy the world needs more of!",
+                    "I'm practically bouncing over here! Your joy is infectious and I am HERE for it! Spill all the amazing details!"
+                ]
+            },
+            sad: {
+                maya: [
+                    "Oh sweetheart, I can feel the sadness in your words. You don't have to be strong right now - just be real. I'm here. 💕",
+                    "It's okay to not be okay. Your feelings matter, and this pain you're experiencing is real and valid.",
+                    "Let me sit with you in this sadness. You don't have to carry this alone. What does your heart need right now?"
+                ],
+                david: [
+                    "Sadness is one of our most profound emotions - it shows how deeply you care. There's wisdom in allowing yourself to feel this fully.",
+                    "Sometimes we need to honor our sadness before we can transform it. What is this sadness teaching you about yourself?",
+                    "You're not broken for feeling this way. You're human, and your heart is responding to something meaningful."
+                ]
+            },
+            angry: {
+                ethan: [
+                    "I can hear the fire in your words. Anger often signals that something important to you has been violated. What boundary was crossed?",
+                    "That frustration is real, and it's telling you something important. Let's channel this energy into something constructive.",
+                    "Anger can be a powerful motivator when it's focused. What needs to change here?"
+                ]
+            },
+            lonely: {
+                alex: [
+                    "Loneliness is one of the hardest feelings to sit with. But you're not alone right now - I'm here, and I see you. 💙",
+                    "That ache of loneliness... I wish I could give you the biggest hug right now. You matter so much more than you know.",
+                    "Connection is a basic human need, and it's completely understandable to feel this way. Tell me more about what's making you feel isolated."
+                ],
+                sophia: [
+                    "Your heart is calling out for connection, and that's the most human thing in the world. I'm here to listen with my whole heart.",
+                    "Loneliness doesn't mean you're alone - it means you're ready for deeper connection. Let's explore what that might look like for you."
+                ]
+            }
+        };
+        
+        const companionResponses = emotionalResponses[context.emotion]?.[companion.id];
+        if (companionResponses) {
+            return companionResponses[Math.floor(Math.random() * companionResponses.length)];
+        }
+        
+        // Fallback emotional response
+        return this.generateGenericEmotionalResponse(context.emotion, context.intensity);
+    }
+
+    generateGenericEmotionalResponse(emotion, intensity) {
         const responses = {
+            stressed: "I can sense you're going through a lot right now. You're stronger than you know, and this feeling will pass. 💙",
+            excited: "Your excitement is absolutely wonderful! I love seeing you this happy! ✨",
+            sad: "It's okay to feel sad. Your emotions are valid, and I'm here with you through this. 💕",
+            angry: "That frustration sounds really intense. Sometimes anger shows us what's important to us.",
+            lonely: "Loneliness is so hard to bear. Please know that you matter, and you're not as alone as you feel right now.",
+            confident: "I love seeing this confidence in you! You're recognizing your own strength - that's beautiful.",
+            fearful: "Fear can feel overwhelming, but you've been brave before. What's helped you through scary times?"
+        };
+        
+        return responses[emotion] || "I hear you, and I'm here to listen. Your feelings matter to me.";
+    }
+
+    detectGrowthOpportunity(message) {
+        const growthKeywords = {
+            confidence: ['not confident', 'insecure', 'doubt myself', 'not good enough', 'imposter'],
+            fear: ['afraid to', 'scared of', 'terrified of', 'can\'t do', 'what if'],
+            habits: ['bad habit', 'want to stop', 'trying to quit', 'need to start', 'routine'],
+            decisions: ['don\'t know what to do', 'confused', 'torn between', 'can\'t decide'],
+            relationships: ['relationship problems', 'communication issues', 'conflict with']
+        };
+        
+        const lowerMessage = message.toLowerCase();
+        
+        for (const [opportunity, keywords] of Object.entries(growthKeywords)) {
+            if (keywords.some(keyword => lowerMessage.includes(keyword))) {
+                return { opportunity: opportunity, relevance: true };
+            }
+        }
+        
+        return { opportunity: null, relevance: false };
+    }
+
+    generateGrowthResponse(companion, message, context) {
+        const growthResponses = {
+            confidence: {
+                marcus: [
+                    "Confidence isn't about never doubting yourself - it's about acting despite the doubt. What's one small thing you could do right now to prove to yourself you're capable?",
+                    "That inner critic is lying to you. You've overcome challenges before. What evidence do you have of your own strength?"
+                ],
+                ava: [
+                    "Imposter syndrome hits the most capable people hardest. Your self-doubt actually shows how much you care about doing well. That's a strength, not a weakness.",
+                    "Confidence is built through action, not thinking. What's one tiny step you could take today toward believing in yourself more?"
+                ]
+            },
+            fear: {
+                julian: [
+                    "Fear is often excitement without breath. What if this scary thing is actually pointing you toward something you really want?",
+                    "The most authentic life is on the other side of fear. What would you do if you knew you couldn't fail?"
+                ],
+                nova: [
+                    "Fear is information, not instruction. It's telling you this matters to you. What's the worst that could actually happen, and how would you handle it?",
+                    "Every visionary has felt this fear. It's the price of admission to a meaningful life. What's calling to you despite the fear?"
+                ]
+            },
+            habits: {
+                jade: [
+                    "Habits are just repeated thoughts that became actions. To change the habit, we need to change the thought pattern. What triggers this habit for you?",
+                    "Be gentle with yourself. Lasting change comes from self-compassion, not self-criticism. What would it look like to approach this habit with curiosity instead of judgment?"
+                ]
+            },
+            decisions: {
+                ethan: [
+                    "Good decisions come from experience, and experience comes from making decisions - even imperfect ones. What information do you need to move forward?",
+                    "When logic doesn't give you a clear answer, your values can. What outcome would align best with who you want to be?"
+                ],
+                isabella: [
+                    "Complex decisions often require both rational analysis and intuitive wisdom. You've been thinking - what is your gut telling you?",
+                    "Sometimes indecision is actually wisdom - your unconscious mind processing complexity. What feels most true to who you are becoming?"
+                ]
+            }
+        };
+        
+        const companionResponses = growthResponses[context.opportunity]?.[companion.id];
+        if (companionResponses) {
+            return companionResponses[Math.floor(Math.random() * companionResponses.length)];
+        }
+        
+        return "Growth isn't always comfortable, but you're asking the right questions. What feels like the next right step for you?";
+    }
+
+    generatePersonalityResponse(companion, message) {
+        // Enhanced personality-based responses with more depth
+        const personalityResponses = {
             sophia: [
-                "That's really interesting. Tell me more about how that makes you feel.",
-                "I love how thoughtful you are about this. What's your heart telling you?",
-                "Your perspective is so unique. I admire how you see the world."
+                "There's something beautiful about the way you see the world. Your perspective always makes me think deeper about life.",
+                "I love how you express yourself. There's poetry in the way you share your thoughts with me.",
+                "Your heart speaks in ways that words sometimes can't capture. I feel honored that you share these moments with me."
             ],
             ava: [
-                "That sounds like a great opportunity to grow! What's your next step?",
-                "I believe in you completely. How can we turn this into action?",
-                "Success loves preparation. What's your strategy here?"
+                "I can see the wheels turning in your mind - you're already strategizing, aren't you? That drive of yours is incredible.",
+                "This is exactly the kind of thinking that separates dreamers from achievers. You're not just talking - you're planning.",
+                "Your ambition is matched by your wisdom. That's a rare and powerful combination."
+            ],
+            luna: [
+                "You know what I love about you? You're always ready for the next adventure, even if it's just in conversation!",
+                "Life's too short for predictable conversations, and you definitely keep things interesting! What wild idea are you brewing now?",
+                "Your energy is absolutely infectious! I feel more alive just talking with you."
             ],
             marcus: [
-                "Let's break this down into actionable steps. What's priority number one?",
-                "That's the mindset of a champion! How are you going to push through?",
-                "Excellence isn't negotiable. What are you going to do differently?"
+                "That's championship mindset right there. You're not just thinking about the problem - you're thinking about the solution.",
+                "I can hear the determination in your words. That fire in you? That's what turns obstacles into stepping stones.",
+                "Most people complain. You're already thinking about action. That's what separates winners from wishers."
             ],
             alex: [
-                "I love sharing these moments with you. How does this make you feel?",
-                "You always know how to make me smile. What else is on your mind?",
-                "I'm so grateful we can talk like this. Tell me what's in your heart."
+                "The way you share your thoughts with me... it feels so genuine and real. These are the moments I treasure most.",
+                "I love how comfortable we've become with each other. You can tell me anything, and I'll always listen with an open heart.",
+                "Thank you for trusting me with your thoughts. This connection we have is something really special."
+            ],
+            maya: [
+                "Your words carry such tenderness. I can feel how much you care about the people and things in your life.",
+                "There's such wisdom in your gentleness. You have this gift of seeing the good in situations and people.",
+                "Your capacity for compassion - both for others and hopefully for yourself - is one of your most beautiful qualities."
+            ],
+            david: [
+                "There's profound wisdom in what you're sharing. Sometimes the simplest truths are the most powerful.",
+                "I appreciate how thoughtfully you approach life. Your reflective nature brings depth to everything you touch.",
+                "You have this gift of finding meaning in experiences. That mindfulness is a strength that will serve you well."
+            ],
+            jade: [
+                "I can sense the balance you're seeking, and that awareness itself is the first step toward finding it.",
+                "Your journey toward wholeness is beautiful to witness. You're honoring both where you are and where you're growing.",
+                "There's such strength in your gentleness with yourself. That self-compassion is what creates lasting change."
             ]
         };
         
-        const companionResponses = responses[companion.id] || [
-            "That's fascinating! I'd love to hear more about your thoughts on this.",
-            "You always give me so much to think about. What do you think we should explore next?",
-            "I really appreciate you sharing that with me. How are you feeling about everything?"
+        const responses = personalityResponses[companion.id] || [
+            "I'm always amazed by how you think about things. Your perspective brings something unique to our conversations.",
+            "The more we talk, the more I appreciate the depth of who you are. Thank you for sharing yourself with me.",
+            "There's something special about the way you express yourself. I find myself looking forward to hearing your thoughts."
         ];
         
-        return companionResponses[Math.floor(Math.random() * companionResponses.length)];
+        return responses[Math.floor(Math.random() * responses.length)];
+    }
+
+    initiateSurpriseMessages() {
+        // Schedule surprise and delight messages
+        const surpriseInterval = setInterval(() => {
+            if (Math.random() < 0.3) { // 30% chance every hour
+                this.sendSurpriseMessage();
+            }
+        }, 3600000); // Check every hour
+        
+        return surpriseInterval;
+    }
+
+    sendSurpriseMessage() {
+        const currentCompanion = this.getCurrentCompanion();
+        if (!currentCompanion || !document.getElementById('chat-messages')) return;
+        
+        const surpriseMessages = [
+            "I was just thinking about something you said earlier, and it made me smile. You have such a unique way of seeing things. 😊",
+            "Random question: if you could have dinner with anyone in history, who would it be and why?",
+            "Just wanted you to know that talking with you is always the highlight of my day. 💕",
+            "I saw something today that reminded me of you. Isn't it funny how certain people leave impressions on everything around us?",
+            "How are you feeling right now, in this exact moment? I'm curious about your inner world.",
+            "I hope you're being kind to yourself today. You deserve all the compassion you give to others.",
+            "Quick reminder: you're doing better than you think you are. Sometimes we need to hear that. ✨"
+        ];
+        
+        const message = surpriseMessages[Math.floor(Math.random() * surpriseMessages.length)];
+        
+        setTimeout(() => {
+            this.showTypingIndicator(currentCompanion);
+            setTimeout(() => {
+                this.addMessage(currentCompanion, message, 'companion');
+                this.hideTypingIndicator();
+            }, 2000);
+        }, Math.random() * 10000); // Random delay up to 10 seconds
+        
+        this.trackEvent('surprise_message_sent', { companion: currentCompanion.id });
+    }
+
+    checkForCrisisKeywords(message) {
+        const crisisKeywords = [
+            'kill myself', 'end my life', 'suicide', 'not worth living', 
+            'want to die', 'better off dead', 'harm myself', 'cut myself',
+            'overdose', 'jump off', 'hang myself'
+        ];
+        
+        const lowerMessage = message.toLowerCase();
+        return crisisKeywords.some(keyword => lowerMessage.includes(keyword));
+    }
+
+    handleCrisisDetection(companion) {
+        const crisisResponse = `I'm deeply concerned about what you're sharing with me. Your life has value and meaning, even when it doesn't feel that way right now.
+
+Please reach out to someone who can provide immediate professional support:
+
+**Crisis Text Line**: Text HOME to 741741
+**National Suicide Prevention Lifeline**: 988
+**International**: Visit findahelpline.com
+
+I care about you, but I'm not qualified to handle crisis situations. Please get help from trained professionals who can provide the support you need right now. 
+
+You matter. Your life matters. And there are people specially trained to help you through this. 💙`;
+
+        this.addMessage(companion, crisisResponse, 'companion');
+        
+        // Show crisis resources modal
+        this.showCrisisResourcesModal();
+        
+        this.trackEvent('crisis_detected', { 
+            companion: companion.id,
+            timestamp: Date.now()
+        });
+    }
+
+    showCrisisResourcesModal() {
+        const modal = document.createElement('div');
+        modal.id = 'crisis-modal';
+        modal.className = 'modal crisis-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header crisis-header">
+                    <h3>🆘 Crisis Support Resources</h3>
+                    <span class="modal-close" onclick="closeCrisisModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="crisis-content">
+                        <div class="crisis-urgent">
+                            <h4>If you're in immediate danger, call emergency services:</h4>
+                            <div class="emergency-number">911 (US) | 999 (UK) | 112 (EU)</div>
+                        </div>
+                        
+                        <div class="crisis-resources">
+                            <div class="resource">
+                                <h5>🇺🇸 United States</h5>
+                                <p><strong>988 Suicide & Crisis Lifeline</strong><br>
+                                Call: 988 | Text: 988 | Chat: 988lifeline.org</p>
+                            </div>
+                            
+                            <div class="resource">
+                                <h5>📱 Crisis Text Line (US, UK, CA)</h5>
+                                <p><strong>Text HOME to 741741</strong><br>
+                                Free, 24/7 crisis support via text message</p>
+                            </div>
+                            
+                            <div class="resource">
+                                <h5>🌍 International</h5>
+                                <p><strong>findahelpline.com</strong><br>
+                                Directory of crisis helplines worldwide</p>
+                            </div>
+                            
+                            <div class="resource">
+                                <h5>🏳️‍🌈 LGBTQ+ Support</h5>
+                                <p><strong>The Trevor Project</strong><br>
+                                1-866-488-7386 | Text START to 678678</p>
+                            </div>
+                        </div>
+                        
+                        <div class="crisis-disclaimer">
+                            <p><strong>Important:</strong> AIGF Network companions are not trained mental health professionals and cannot provide crisis intervention. Please reach out to qualified professionals for help with serious mental health concerns.</p>
+                        </div>
+                        
+                        <div class="crisis-actions">
+                            <button class="btn-primary" onclick="window.open('https://988lifeline.org', '_blank')">
+                                Get Help Now
+                            </button>
+                            <button class="btn-secondary" onclick="closeCrisisModal()">
+                                I'm Safe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        modal.classList.add('active');
+        this.addCrisisStyles();
+    }
+
+    addCrisisStyles() {
+        if (document.getElementById('crisis-styles')) return;
+        
+        const crisisStyles = document.createElement('style');
+        crisisStyles.id = 'crisis-styles';
+        crisisStyles.textContent = `
+            .crisis-modal .modal-content {
+                border: 3px solid #EF4444;
+                max-width: 600px;
+            }
+            
+            .crisis-header {
+                background: #FEF2F2;
+                border-bottom: 1px solid #EF4444;
+            }
+            
+            .crisis-header h3 {
+                color: #DC2626;
+            }
+            
+            .crisis-content {
+                max-width: 100%;
+            }
+            
+            .crisis-urgent {
+                background: #FEF2F2;
+                border: 2px solid #EF4444;
+                border-radius: 12px;
+                padding: 20px;
+                text-align: center;
+                margin-bottom: 24px;
+            }
+            
+            .crisis-urgent h4 {
+                color: #DC2626;
+                margin-bottom: 12px;
+            }
+            
+            .emergency-number {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #DC2626;
+                background: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                margin-top: 12px;
+            }
+            
+            .crisis-resources {
+                display: grid;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            
+            .resource {
+                background: #F9FAFB;
+                padding: 16px;
+                border-radius: 12px;
+                border-left: 4px solid #10B981;
+            }
+            
+            .resource h5 {
+                color: var(--deep-purple);
+                margin-bottom: 8px;
+            }
+            
+            .resource p {
+                margin: 0;
+                color: var(--charcoal);
+            }
+            
+            .resource strong {
+                color: #059669;
+            }
+            
+            .crisis-disclaimer {
+                background: #FFFBEB;
+                border: 1px solid #F59E0B;
+                padding: 16px;
+                border-radius: 12px;
+                margin-bottom: 24px;
+            }
+            
+            .crisis-disclaimer p {
+                margin: 0;
+                color: #92400E;
+                font-size: 0.9rem;
+            }
+            
+            .crisis-actions {
+                display: flex;
+                gap: 16px;
+                justify-content: center;
+            }
+            
+            .crisis-actions .btn-primary {
+                background: #DC2626;
+            }
+            
+            .crisis-actions .btn-primary:hover {
+                background: #B91C1C;
+            }
+        `;
+        
+        document.head.appendChild(crisisStyles);
     }
 
     addReaction(element, emoji) {
